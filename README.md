@@ -84,25 +84,46 @@ day that is about **EUR1.20/month**. `MONTHLY_BUDGET_EUR` is a hard cap,
 checked before every call: when it is reached the service stops calling the API
 and leaves scans in the incoming folder rather than overspending.
 
-## Modules
+## Layout
 
-| File | Responsibility |
+```
+main.py, dashboard.py   entry points (what the systemd units run)
+nettune/                the application package
+├── config.py           settings (Pydantic), all overridable from .env
+├── main.py             orchestration: detect → stabilise → dedupe → process → archive
+├── intake/             watching the share, what counts as a scan, never twice
+├── pages/              orientation, page kind, blank pages, one paper or two
+├── reading/            OpenAI vision calls, repeated readings, consensus
+├── dates/              dating sheets and checking them against the batch
+├── report/             stored lines, routine rules, the monthly memoria (.docx)
+├── review/             the review dashboard (server, auth, HTML)
+└── ops/                spend cap, email notices, the correction feedback loop
+ocr_feedback/           standalone library: OCR dataset export and evaluation
+prompts/                prompt text, edited without touching code
+tools/                  one-off maintenance scripts for stored months
+tests/                  pytest suite, OpenAI stubbed
+deploy/                 Raspberry Pi install, systemd units, Samba config
+promptfoo/, feedback/   prompt evals and the OCR feedback profile
+```
+
+| Module | Responsibility |
 |---|---|
-| `main.py` | Orchestration loop: detect → stabilise → dedupe → process → archive |
-| `config.py` | Pydantic settings, all overridable from `.env` |
-| `scanner_monitor.py` | Recursive watcher; picks inotify or polling per filesystem |
-| `scan_filter.py` | Which files are real scans (and which are the app's own output) |
-| `processed_ledger.py` | SHA-256 record of processed scans, plus a cache of paid stages |
-| `retry_scheduler.py` | Exponential-backoff retries so a transient API outage loses nothing |
-| `pdf_pages.py` | Rasterises each PDF page to an image |
-| `page_reader.py` | Reads a page several times for cross-checking |
-| `consensus.py` | Reconciles the readings and flags disagreements |
-| `batch_dates.py` | Cross-checks page dates against the rest of the batch |
-| `spend_guard.py` | Hard monthly budget, enforced before every call |
-| `month_folders.py` | Spanish month-folder conventions |
-| `transcription_service.py` | OpenAI Vision call |
-| `filtering_agents.py` | Analysis agent over the transcription |
-| `report_generator.py` | Word document output |
+| `nettune/main.py` | Orchestration loop: detect → stabilise → dedupe → process → archive |
+| `nettune/config.py` | Pydantic settings, all overridable from `.env` |
+| `nettune/intake/scanner_monitor.py` | Recursive watcher; picks inotify or polling per filesystem |
+| `nettune/intake/scan_filter.py` | Which files are real scans (and which are the app's own output) |
+| `nettune/intake/processed_ledger.py` | SHA-256 record of processed scans, plus a cache of paid stages |
+| `nettune/intake/retry_scheduler.py` | Exponential-backoff retries so a transient API outage loses nothing |
+| `nettune/intake/pdf_pages.py` | Rasterises each PDF page to an image |
+| `nettune/reading/page_reader.py` | Reads a page several times for cross-checking |
+| `nettune/reading/consensus.py` | Reconciles the readings and flags disagreements |
+| `nettune/reading/transcription_service.py` | OpenAI Vision call |
+| `nettune/reading/filtering_agents.py` | Analysis agent over the transcription |
+| `nettune/dates/batch_dates.py` | Cross-checks page dates against the rest of the batch |
+| `nettune/report/month_folders.py` | Spanish month-folder conventions |
+| `nettune/report/memoria.py` | Word document output |
+| `nettune/review/dashboard.py` | The review dashboard |
+| `nettune/ops/spend_guard.py` | Hard monthly budget, enforced before every call |
 | `prompts/` | Prompt text, edited without touching code |
 
 ## Documents not in this repository

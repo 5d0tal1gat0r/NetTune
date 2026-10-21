@@ -5,11 +5,11 @@ import threading
 
 import pytest
 
-from config import config
-from dashboard import ROUTES, _dispatch_request, handle
-from entry_store import EntryStore
-from month_folders import revision_dir_for
-from review_marks import image_name
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name
+from nettune.review.dashboard import ROUTES, _dispatch_request, handle
 
 LAN = "192.168.50.41"
 TAILNET = "100.64.0.10"
@@ -254,7 +254,7 @@ class TestSpendIsReal:
     """
 
     def _ledger(self, tmp_path, monkeypatch, usd: float | None):
-        from spend_guard import SpendGuard
+        from nettune.ops.spend_guard import SpendGuard
         db = tmp_path / "spend.sqlite3"
         monkeypatch.setattr(config, "spend_db", str(db))
         if usd is not None:
@@ -324,7 +324,7 @@ class TestRootRedirectsToTheLatestMonth:
     def test_it_falls_back_to_the_current_month_when_nothing_has_been_read(self, tmp_path):
         from datetime import datetime
 
-        from month_folders import MONTH_FOLDERS
+        from nettune.report.month_folders import MONTH_FOLDERS
 
         with EntryStore(str(tmp_path / "empty.sqlite3")) as empty_store:
             response = handle("GET", "/", address=LAN, store=empty_store)
@@ -807,17 +807,17 @@ class TestNoTypedLineIsLost:
 
 class TestCtrlS:
     def test_the_page_offers_it(self):
-        from dashboard_html import _SCRIPT
+        from nettune.review.dashboard_html import _SCRIPT
         assert "evento.ctrlKey || evento.metaKey" in _SCRIPT
         assert "formGuardar.requestSubmit" in _SCRIPT
 
     def test_every_form_submission_carries_the_edited_boxes(self):
-        from dashboard_html import _SCRIPT
+        from nettune.review.dashboard_html import _SCRIPT
         assert "document.addEventListener('submit'" in _SCRIPT
         assert "'texto-' + caja.getAttribute('data-id')" in _SCRIPT
 
     def test_leaving_with_unsaved_lines_asks_first(self):
-        from dashboard_html import _SCRIPT
+        from nettune.review.dashboard_html import _SCRIPT
         assert "beforeunload" in _SCRIPT
 
 
@@ -1002,7 +1002,7 @@ class TestAHandTurnSticks:
     def test_a_re_dropped_scan_keeps_the_turn(self, store, hoja, tmp_path):
         from PIL import Image
 
-        from main import save_review_image
+        from nettune.main import save_review_image
         ref, path, revision = hoja
         self._turn(store, ref, 90)
         # The pipeline writes a fresh, unturned copy of the same page.
@@ -1126,7 +1126,7 @@ class TestEveryFeatureInAnotherMonth:
             "Duda 03-03-2025 p1.", "Nueva en marzo.", "Clara 03-03-2025 p1."]
 
     def test_guardar_saves_pending_lines_and_writes_that_months_docx(self, meses):
-        from month_folders import memoria_name, processed_dir_for
+        from nettune.report.month_folders import memoria_name, processed_dir_for
         linea = meses.month_entries("2027", "ENERO")[0]
         response = handle("POST", "/guardar/2027/ENERO", address=LAN, store=meses, form={
             f"texto-{linea['id']}": "Corregida en enero.", "hoja": "08-01-2027_p3.jpg",
@@ -1257,7 +1257,7 @@ def test_guardar_keeps_the_tag_filter(store):
 class TestMaintenanceMode:
     @pytest.fixture
     def flag(self, tmp_path, monkeypatch):
-        import dashboard
+        from nettune.review import dashboard
         path = tmp_path / "MANTENIMIENTO"
         monkeypatch.setattr(dashboard, "_maintenance_flag", lambda: str(path))
         return path
@@ -1314,7 +1314,7 @@ class TestMaintenanceMode:
 
 
 def test_the_flag_lives_beside_the_database(monkeypatch):
-    import dashboard
+    from nettune.review import dashboard
     monkeypatch.setattr(config, "entry_db", "/opt/app/state/memoria_entries.sqlite3")
     assert dashboard._maintenance_flag() == "/opt/app/state/MANTENIMIENTO"
 

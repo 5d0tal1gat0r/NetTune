@@ -26,12 +26,12 @@ import unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import gcv_ocr
-import pdf_pages
-from config import config
-from page_rotation import straighten
-from spend_guard import SpendGuard
-from transcription_service import read_page as gpt_read_page
+from nettune.config import config
+from nettune.intake import pdf_pages
+from nettune.ops.spend_guard import SpendGuard
+from nettune.pages.page_rotation import straighten
+from nettune.reading import gcv_ocr
+from nettune.reading.transcription_service import read_page as gpt_read_page
 
 # Below this, two lines are different entries rather than two readings of one.
 # 0.6 keeps "Se colocan pilonas Z1" beside "Se colocan pilonas 21" and still

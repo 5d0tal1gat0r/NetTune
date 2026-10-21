@@ -17,9 +17,9 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import config
-from entry_store import EntryStore
-from locales import correct_names
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.locales import correct_names
 
 
 def plan(store: EntryStore, year: str, month: str, template: str) -> list[tuple[dict, str]]:

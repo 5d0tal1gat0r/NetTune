@@ -2,8 +2,8 @@
 
 import os
 
-import main
-from month_folders import MONTH_FOLDERS, month_dir_for
+from nettune import main
+from nettune.report.month_folders import MONTH_FOLDERS, month_dir_for
 
 
 class _Monitor:

@@ -7,7 +7,7 @@ kept. The routine openings all use the verb and name nobody.
 
 import pytest
 
-from routine_rules import is_noise, is_routine_text, reads_as_event
+from nettune.report.routine_rules import is_noise, is_routine_text, reads_as_event
 
 
 def hidden(text: str) -> bool:

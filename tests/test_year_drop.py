@@ -2,7 +2,7 @@
 
 import pytest
 
-from batch_dates import dominant_month
+from nettune.dates.batch_dates import dominant_month
 
 
 def page(fecha):

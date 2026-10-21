@@ -16,6 +16,7 @@ import uuid
 import weakref
 from datetime import datetime, timezone
 
+from nettune import ROOT
 from ocr_feedback.model import FinalLine, Line, Page, Run, StageOutput
 from ocr_feedback.recorder import make_recorder
 from ocr_feedback.store import private_copy
@@ -38,7 +39,7 @@ def recorder():
     """The process's recorder, rebuilt if the configured path or switch changes.
     With capture on, a recorder that failed to open is retried after
     RETRY_BACKOFF seconds."""
-    from config import config
+    from nettune.config import config
 
     key = (config.feedback_db, config.dataset_capture)
     with _lock:
@@ -67,7 +68,7 @@ def ref_page_id(year: str, month: str, review_ref: str) -> str:
     return f"ref:{year}/{month}/{review_ref}"
 
 
-_PROMPTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts")
+_PROMPTS = os.path.join(ROOT, "prompts")
 
 
 def _now() -> str:
@@ -100,7 +101,7 @@ def snapshot(page):
 
 
 def config_hash() -> str:
-    from config import config
+    from nettune.config import config
 
     digest = hashlib.sha256(config.model_name.encode())
     for name in sorted(os.listdir(_PROMPTS)):
@@ -118,7 +119,7 @@ def start_run(source_name: str) -> str:
     try:
         rec = recorder()
         if rec.enabled:
-            from config import config
+            from nettune.config import config
 
             rec.record_run(Run(run_id, config_hash(), _now(),
                                {"source": source_name, "model": config.model_name}))
@@ -194,7 +195,7 @@ class NetTuneTruth:
     opened for writing (EntryStore migrates whatever it opens)."""
 
     def __init__(self, entries_db: str, year: str | None = None, month: str | None = None):
-        from entry_store import EntryStore
+        from nettune.report.entry_store import EntryStore
 
         self._dir, copy = private_copy(entries_db)
         try:
@@ -221,7 +222,7 @@ class NetTuneTruth:
         return (" WHERE " + " AND ".join(clauses)) if clauses else "", tuple(params)
 
     def pages(self) -> list:
-        from review_marks import image_name, is_maintenance_ref
+        from nettune.report.review_marks import image_name, is_maintenance_ref
 
         where, params = self._where()
         found = {}
@@ -249,7 +250,7 @@ class NetTuneTruth:
         return self._final[key]
 
     def final_lines(self, page_id_: str) -> list:
-        from entry_store import HAND_SOURCE
+        from nettune.report.entry_store import HAND_SOURCE
 
         if not self._sheets:
             self.pages()

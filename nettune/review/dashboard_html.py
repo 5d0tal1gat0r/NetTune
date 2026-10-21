@@ -19,9 +19,9 @@ page for both.
 import html
 import re
 
-from entry_store import sheet_order
-from memoria_blocks import SHORT_NAMES, SLUGS, slug_of
-from review_marks import MAINTENANCE_IMAGE_PREFIX, image_name, plain_ref
+from nettune.report.entry_store import sheet_order
+from nettune.report.memoria_blocks import SHORT_NAMES, SLUGS, slug_of
+from nettune.report.review_marks import MAINTENANCE_IMAGE_PREFIX, image_name, plain_ref
 
 # Mirrors entry_store.review_line's own split of "20-09-2026 p39" into sheet
 # and page: the label on the row and the sentence in the memoria should name
@@ -2382,7 +2382,7 @@ def _month_bounds(year: str, month: str) -> tuple[str, str]:
     """First and last day of the folder's month, as the date input wants them."""
     import calendar
 
-    from month_folders import MONTH_FOLDERS
+    from nettune.report.month_folders import MONTH_FOLDERS
 
     if month not in MONTH_FOLDERS or not str(year).isdigit():
         return "", ""

@@ -19,10 +19,10 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import config
-from entry_store import EntryStore
-from month_folders import revision_dir_for
-from review_marks import image_name, legacy_image_name
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name, legacy_image_name
 
 
 def plan(store: EntryStore, incoming_dir: str) -> tuple[list, list]:

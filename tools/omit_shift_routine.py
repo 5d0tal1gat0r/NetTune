@@ -22,10 +22,10 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import config
-from entry_store import EntryStore
-from memoria import SEGURIDAD_BLOCK
-from routine_rules import is_shift_routine
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK
+from nettune.report.routine_rules import is_shift_routine
 
 
 def plan(store: EntryStore, year: str, month: str) -> list[dict]:

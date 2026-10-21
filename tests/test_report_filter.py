@@ -7,7 +7,7 @@ passes disagreed on is still uncertain after being tidied up.
 """
 
 
-from filtering_agents import apply_filter, redact_operarios
+from nettune.reading.filtering_agents import apply_filter, redact_operarios
 
 
 def page(entries=None, operarios=("A. Ejemplo",)):
@@ -118,20 +118,20 @@ def test_redaction_leaves_work_entries_alone():
 
 
 def test_maintenance_pages_use_the_maintenance_prompt():
-    from filtering_agents import prompt_for
+    from nettune.reading.filtering_agents import prompt_for
 
     assert prompt_for("mantenimiento") == "filter_mantenimiento.md"
 
 
 def test_security_pages_use_the_security_prompt():
-    from filtering_agents import prompt_for
+    from nettune.reading.filtering_agents import prompt_for
 
     assert prompt_for("seguridad") == "filter_seguridad.md"
 
 
 def test_an_unknown_type_falls_back_to_maintenance_wording():
     """Maintenance is the more conservative of the two: it rewrites less."""
-    from filtering_agents import prompt_for
+    from nettune.reading.filtering_agents import prompt_for
 
     assert prompt_for("desconocido") == "filter_mantenimiento.md"
     assert prompt_for(None) == "filter_mantenimiento.md"
@@ -140,7 +140,7 @@ def test_an_unknown_type_falls_back_to_maintenance_wording():
 def test_both_prompt_files_exist():
     import os
 
-    from filtering_agents import prompt_for
+    from nettune.reading.filtering_agents import prompt_for
 
     for kind in ("mantenimiento", "seguridad"):
         assert os.path.exists(os.path.join("prompts", prompt_for(kind)))

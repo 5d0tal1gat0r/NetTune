@@ -2,8 +2,8 @@ import queue
 
 import pytest
 
-from retry_scheduler import RetryScheduler
-from scanner_monitor import ScanEventHandler
+from nettune.intake.retry_scheduler import RetryScheduler
+from nettune.intake.scanner_monitor import ScanEventHandler
 
 
 class Event:

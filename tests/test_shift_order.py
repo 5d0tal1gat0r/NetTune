@@ -5,14 +5,14 @@ import os
 
 import pytest
 
-from batch_dates import chronological_order
-from config import config
-from consensus import consolidate
-from entry_store import HAND_SOURCE, EntryStore
-from month_folders import revision_dir_for
-from review_marks import image_name
-from sheet_dates import renumber_files
-from transcription_service import normalise_hour
+from nettune.config import config
+from nettune.dates.batch_dates import chronological_order
+from nettune.dates.sheet_dates import renumber_files
+from nettune.reading.consensus import consolidate
+from nettune.reading.transcription_service import normalise_hour
+from nettune.report.entry_store import HAND_SOURCE, EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name
 
 SRC = "SKM_H.pdf"
 
@@ -60,7 +60,7 @@ class TestTheOrder:
     def test_the_processor_numbers_by_it(self):
         import inspect
 
-        import main
+        from nettune import main
         source = inspect.getsource(main.process_scan)
         # Security sheets in this order, numbered per section
         # (test_page_numbers_per_month).

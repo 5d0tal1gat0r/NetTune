@@ -19,8 +19,9 @@ from datetime import date, datetime
 
 from openai import OpenAI
 
-from config import config
-from spend_guard import OutOfCredit
+from nettune import ROOT
+from nettune.config import config
+from nettune.ops.spend_guard import OutOfCredit
 
 client = OpenAI(api_key=config.openai_api_key)
 
@@ -142,7 +143,7 @@ def encode_image(image_path: str) -> tuple[str, str]:
 
 
 def load_prompt(filename: str) -> str:
-    path = os.path.join(os.path.dirname(__file__), "prompts", filename)
+    path = os.path.join(ROOT, "prompts", filename)
     with open(path, encoding="utf-8") as handle:
         return handle.read()
 

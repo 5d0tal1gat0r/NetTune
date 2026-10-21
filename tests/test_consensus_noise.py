@@ -6,7 +6,7 @@ noise: a different clock time on the same sentence, and a different article.
 Neither reaches the document, so neither is a disagreement about it.
 """
 
-from consensus import comparable
+from nettune.reading.consensus import comparable
 
 
 class TestClockTime:
@@ -61,7 +61,7 @@ class TestTheReadingsAreComparedThatWay:
     with normalize(), so the noise it names went on flagging lines."""
 
     def _consolidated(self, first, second):
-        from consensus import consolidate
+        from nettune.reading.consensus import consolidate
         return consolidate([{"fecha": "01-09-2026", "trabajos": first},
                             {"fecha": "01-09-2026", "trabajos": second}])["trabajos"]
 

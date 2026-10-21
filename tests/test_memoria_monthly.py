@@ -7,8 +7,8 @@ import pytest
 from docx import Document
 from openpyxl import Workbook
 
-from memoria import fill_memoria
-from memoria_monthly import (
+from nettune.report.memoria import fill_memoria
+from nettune.report.memoria_monthly import (
     find_sources,
     format_count,
     format_euros,
@@ -150,19 +150,19 @@ def _days(year, month, first, last, skip=()):
 
 
 def test_a_whole_month_keeps_the_plain_title():
-    from memoria_monthly import chart_title
+    from nettune.report.memoria_monthly import chart_title
     assert chart_title(_days(2026, 8, 1, 31), "AGOSTO", "2026") == "Afluencia diaria - Agosto 2026"
 
 
 def test_a_month_cut_short_says_which_days_and_how_many_are_missing():
     """The export downloaded on 24 August stops there; the chart must not
     pass for the whole month."""
-    from memoria_monthly import chart_title
+    from nettune.report.memoria_monthly import chart_title
     assert chart_title(_days(2026, 8, 1, 24), "AGOSTO", "2026") == (
         "Afluencia diaria - 1–24 agosto 2026 (faltan 7 días)")
 
 
 def test_a_gap_inside_the_month_is_counted_too():
-    from memoria_monthly import chart_title
+    from nettune.report.memoria_monthly import chart_title
     assert chart_title(_days(2026, 9, 1, 30, skip=(10,)), "SEPTIEMBRE", "2026") == (
         "Afluencia diaria - 1–30 septiembre 2026 (falta 1 día)")

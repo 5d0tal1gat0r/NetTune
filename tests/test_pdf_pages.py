@@ -3,7 +3,7 @@ import shutil
 
 import pytest
 
-from pdf_pages import PdfRenderError, is_pdf, page_count, render_pages
+from nettune.intake.pdf_pages import PdfRenderError, is_pdf, page_count, render_pages
 
 REAL_PDF = "/home/al1gat0r/Downloads/SKM_C30826081908350.pdf"
 needs_pdf = pytest.mark.skipif(not os.path.exists(REAL_PDF), reason="sample PDF absent")

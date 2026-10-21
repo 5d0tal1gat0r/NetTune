@@ -2,7 +2,7 @@
 
 import pytest
 
-from review_marks import IMAGE_SUFFIX, image_name, locator, mark, needs_review
+from nettune.report.review_marks import IMAGE_SUFFIX, image_name, locator, mark, needs_review
 
 
 class TestLocator:

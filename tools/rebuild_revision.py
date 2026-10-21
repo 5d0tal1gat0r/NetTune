@@ -33,13 +33,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from PIL import Image, ImageChops, ImageStat
 
-from config import config
-from entry_store import EntryStore
-from month_folders import revision_dir_for
-from page_rotation import straighten, to_portrait
-from pdf_pages import is_pdf, render_pages
-from review_marks import image_name, locator
-from sheet_split import split_sheets
+from nettune.config import config
+from nettune.intake.pdf_pages import is_pdf, render_pages
+from nettune.pages.page_rotation import straighten, to_portrait
+from nettune.pages.sheet_split import split_sheets
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name, locator
 
 _THUMB = 48
 

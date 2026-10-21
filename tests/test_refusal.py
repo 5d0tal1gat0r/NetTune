@@ -1,6 +1,6 @@
 import pytest
 
-from transcription_service import RefusalError, is_refusal, parse_reading
+from nettune.reading.transcription_service import RefusalError, is_refusal, parse_reading
 
 
 @pytest.mark.parametrize("text", [

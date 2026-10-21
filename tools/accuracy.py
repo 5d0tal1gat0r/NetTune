@@ -22,7 +22,7 @@ import unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from memoria import MANTENIMIENTO_BLOCKS, SEGURIDAD_BLOCK, block_contents
+from nettune.report.memoria import MANTENIMIENTO_BLOCKS, SEGURIDAD_BLOCK, block_contents
 
 # Two entries describing the same event, allowing for a misread word or two.
 SAME_ENTRY = 0.65

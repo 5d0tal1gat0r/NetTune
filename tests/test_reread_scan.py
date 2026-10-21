@@ -10,9 +10,9 @@ def setup(app, tmp_path, monkeypatch):
     """A maintenance scan of three sheets, read once with the old reading."""
     from conftest import a_page
 
-    from entry_store import EntryStore
-    from processed_ledger import ProcessedLedger
-    from spend_guard import SpendGuard
+    from nettune.intake.processed_ledger import ProcessedLedger
+    from nettune.ops.spend_guard import SpendGuard
+    from nettune.report.entry_store import EntryStore
 
     reading = {"text": "Reparando luz P/C"}
     dates = ["31-08-2026", "01-09-2026", "02-09-2026"]
@@ -44,7 +44,7 @@ def setup(app, tmp_path, monkeypatch):
 
 
 def _touch(folder, ref):
-    from review_marks import image_name
+    from nettune.report.review_marks import image_name
 
     os.makedirs(folder, exist_ok=True)
     open(os.path.join(folder, image_name(ref)), "wb").close()
@@ -166,7 +166,7 @@ def test_two_rereads_on_one_day_keep_both_backups(app, tmp_path, monkeypatch):
     """The second run's backup must not overwrite the first: on 2026-10-19 the
     second copied the month the first had already emptied, over the good one."""
     import tools.reread_scan as tool
-    from config import config
+    from nettune.config import config
 
     monkeypatch.setattr(tool, "processor_running", lambda: False)
     monkeypatch.setattr(config, "backup_dir", str(tmp_path / "backups"))
@@ -195,7 +195,7 @@ def test_it_refuses_while_the_processor_runs(monkeypatch):
 
 
 def test_a_corrected_date_is_put_back_when_misread_again(setup):
-    from review_marks import image_name
+    from nettune.report.review_marks import image_name
     from tools.reread_scan import reread
 
     app, store, ledger, guard, _ = setup

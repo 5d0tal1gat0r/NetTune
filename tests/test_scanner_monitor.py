@@ -1,6 +1,6 @@
 import pytest
 
-from scanner_monitor import (
+from nettune.intake.scanner_monitor import (
     NETWORK_FILESYSTEMS,
     choose_observer_kind,
     filesystem_type,

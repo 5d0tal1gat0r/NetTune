@@ -5,8 +5,9 @@ new profile; a different system needs a profile and an adapter.
 """
 
 import hashlib
-import tomllib
 from dataclasses import dataclass, field
+
+import tomllib
 
 from .model import STAGE_KINDS
 

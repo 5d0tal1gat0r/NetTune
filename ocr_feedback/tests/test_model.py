@@ -1,7 +1,15 @@
 import pytest
 
-from ocr_feedback.model import (ACTIONS, STAGE_KINDS, STATUSES, FinalLine, Line, Page,
-                                ReviewEvent, StageOutput)
+from ocr_feedback.model import (
+    ACTIONS,
+    STAGE_KINDS,
+    STATUSES,
+    FinalLine,
+    Line,
+    Page,
+    ReviewEvent,
+    StageOutput,
+)
 
 
 def test_constants():

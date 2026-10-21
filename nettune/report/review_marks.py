@@ -16,8 +16,8 @@ paper.
 import os
 import re
 
-from batch_dates import parse_date
-from routine_rules import is_incoherent
+from nettune.dates.batch_dates import parse_date
+from nettune.report.routine_rules import is_incoherent
 
 IMAGE_SUFFIX = ".jpg"
 

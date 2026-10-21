@@ -1,7 +1,7 @@
 """A maintenance page keeps the order it was written in across subheadings."""
 
-from main import number_lines, split_by_block
-from memoria_blocks import ELECTRICIDAD, OTROS, PARKING
+from nettune.main import number_lines, split_by_block
+from nettune.report.memoria_blocks import ELECTRICIDAD, OTROS, PARKING
 
 
 def lines(*pairs):

@@ -2,7 +2,12 @@
 
 import pytest
 
-from routine_rules import expand_codes, invalid_plantas, is_incoherent, is_routine_text
+from nettune.report.routine_rules import (
+    expand_codes,
+    invalid_plantas,
+    is_incoherent,
+    is_routine_text,
+)
 
 
 class TestPlantaWording:

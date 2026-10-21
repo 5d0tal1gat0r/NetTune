@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from scan_filter import is_processable_scan, iter_pending_scans
+from nettune.intake.scan_filter import is_processable_scan, iter_pending_scans
 
 
 @pytest.fixture
@@ -102,7 +102,7 @@ def test_iter_pending_scans_tolerates_missing_root(tmp_path):
 
 def test_scan_extensions_exclude_generated_reports():
     """The pipeline writes .docx into the watched tree; it must never re-read them."""
-    from scan_filter import SCAN_EXTENSIONS
+    from nettune.intake.scan_filter import SCAN_EXTENSIONS
 
     assert ".docx" not in SCAN_EXTENSIONS
     assert ".jpg" in SCAN_EXTENSIONS

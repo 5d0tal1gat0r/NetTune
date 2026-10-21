@@ -5,7 +5,7 @@ can only see the 180 degrees once the 90 has been taken out, so a single
 pass leaves a page that was doubly rotated still on its head.
 """
 
-import page_rotation
+from nettune.pages import page_rotation
 
 
 def test_it_keeps_going_while_a_rotation_is_reported(monkeypatch, tmp_path):

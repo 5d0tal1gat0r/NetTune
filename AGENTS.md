@@ -158,21 +158,24 @@ logging.basicConfig(
 
 ```
 security_log_processor/
-├── main.py                   # Entry point / orchestration loop
-├── config.py                 # Configuration (Pydantic)
-├── scanner_monitor.py        # Recursive watcher, inotify/polling selection
-├── scan_filter.py            # Which files count as scans
-├── processed_ledger.py       # SHA-256 dedupe, SQLite
-├── month_folders.py          # Spanish month-folder conventions
-├── transcription_service.py  # OpenAI Vision integration
-├── filtering_agents.py       # AI agent processing
-├── report_generator.py       # Word document generation
+├── main.py, dashboard.py     # Entry points; the code lives in nettune/
+├── nettune/
+│   ├── config.py             # Configuration (Pydantic)
+│   ├── main.py               # Orchestration loop
+│   ├── intake/               # Watcher, scan filter, dedupe ledger, retries, PDF pages
+│   ├── pages/                # Orientation, page kind, blank pages, paper splits
+│   ├── reading/              # OpenAI Vision, repeated readings, consensus, filtering
+│   ├── dates/                # Sheet dates and the batch cross-check
+│   ├── report/               # Entry store, routine rules, memoria (.docx)
+│   ├── review/               # Review dashboard
+│   └── ops/                  # Spend guard, email, feedback capture
+├── ocr_feedback/             # Standalone OCR dataset/eval library
 ├── prompts/                  # Prompt text (edit without touching code)
+├── tools/                    # Maintenance scripts (import nettune.*)
 ├── tests/                    # pytest suite, OpenAI stubbed
-├── deploy/                   # systemd unit, Samba config, install.sh
-├── templates/                # Word templates
-├── incoming_scans/           # Directory monitored for new scans
-└── venv/                     # Virtual environment
+├── deploy/                   # systemd units, Samba config, install.sh
+├── templates/                # Word templates (not in git)
+└── incoming_scans/           # Directory monitored for new scans
 ```
 
 ### Best Practices

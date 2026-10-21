@@ -16,8 +16,8 @@ def _feedback_db_in_tmp(tmp_path, monkeypatch):
     """Capture writes into the test's own folder, never into the repo's state/."""
     path = str(tmp_path / "feedback" / "feedback.sqlite3")
     monkeypatch.setenv("FEEDBACK_DB", path)
-    if "config" in sys.modules:
-        monkeypatch.setattr(sys.modules["config"].config, "feedback_db", path)
+    if "nettune.config" in sys.modules:
+        monkeypatch.setattr(sys.modules["nettune.config"].config, "feedback_db", path)
 
 
 @pytest.fixture
@@ -34,11 +34,17 @@ def app(tmp_path, monkeypatch):
     monkeypatch.setenv("READINGS_PER_PAGE", "3")
     monkeypatch.chdir(tmp_path)
     for module in list(sys.modules):
-        if module in _APP_MODULES:
+        parent, _, name = module.rpartition(".")
+        if name in _APP_MODULES and module.startswith("nettune."):
             del sys.modules[module]
+            # The package still holds the old module as an attribute, and
+            # `from nettune.x import name` would hand that back instead of
+            # importing it fresh.
+            if parent in sys.modules and hasattr(sys.modules[parent], name):
+                delattr(sys.modules[parent], name)
 
-    import main
-    from month_folders import ensure_month_tree
+    from nettune import main
+    from nettune.report.month_folders import ensure_month_tree
 
     ensure_month_tree(str(incoming))
     main.incoming = str(incoming)
@@ -64,10 +70,10 @@ def a_page(fecha="02-07-2026", entries=(("Conectando mg de aire", True),)):
 @pytest.fixture
 def kit(app):
     """app plus a ledger, retry scheduler, monitor and spend guard."""
-    from processed_ledger import ProcessedLedger
-    from retry_scheduler import RetryScheduler
-    from scanner_monitor import ScannerMonitor
-    from spend_guard import SpendGuard
+    from nettune.intake.processed_ledger import ProcessedLedger
+    from nettune.intake.retry_scheduler import RetryScheduler
+    from nettune.intake.scanner_monitor import ScannerMonitor
+    from nettune.ops.spend_guard import SpendGuard
 
     ledger = ProcessedLedger(app.config.state_db)
     guard = SpendGuard(app.config.spend_db, monthly_budget_eur=5.0)

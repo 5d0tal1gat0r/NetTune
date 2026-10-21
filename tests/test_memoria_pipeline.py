@@ -5,8 +5,13 @@ import os
 import pytest
 from docx import Document
 
-from entry_store import EntryStore
-from memoria import MANTENIMIENTO_BLOCKS, SEGURIDAD_BLOCK, block_contents, fill_memoria
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import (
+    MANTENIMIENTO_BLOCKS,
+    SEGURIDAD_BLOCK,
+    block_contents,
+    fill_memoria,
+)
 
 TEMPLATE = "templates/MEMORIA.docx"
 pytestmark = pytest.mark.skipif(not os.path.exists(TEMPLATE), reason="template absent")

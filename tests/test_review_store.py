@@ -9,7 +9,7 @@ import sqlite3
 
 import pytest
 
-from entry_store import EntryStore
+from nettune.report.entry_store import EntryStore
 
 
 @pytest.fixture

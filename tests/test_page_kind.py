@@ -9,8 +9,8 @@ import os
 
 import pytest
 
-import page_kind
-from page_kind import MANTENIMIENTO, PARKING, SEGURIDAD, kind_from_text
+from nettune.pages import page_kind
+from nettune.pages.page_kind import MANTENIMIENTO, PARKING, SEGURIDAD, kind_from_text
 
 # What tesseract made of the real forms' printed text, September 2026.
 PARKING_HEADER = (

@@ -1,6 +1,6 @@
 """A page that produced no entry must be named, not skipped in silence."""
 
-from main import blank_page_report
+from nettune.main import blank_page_report
 
 
 def test_nothing_is_said_when_every_page_produced_entries():

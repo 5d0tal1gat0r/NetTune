@@ -2,7 +2,7 @@
 
 import logging
 
-from spend_guard import SpendGuard
+from nettune.ops.spend_guard import SpendGuard
 
 
 def _guard(tmp_path, spent_usd: float, when: list[str]):
@@ -97,8 +97,7 @@ def test_it_says_when_it_has_just_warned(tmp_path):
 
 
 def test_the_warning_is_emailed_once(monkeypatch):
-    import notify
-
+    from nettune.ops import notify
     # notify's own config: other tests import the app's modules afresh.
     config = notify.config
     monkeypatch.setattr(config, "notify_to", "admin@example.com")

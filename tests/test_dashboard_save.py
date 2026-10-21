@@ -4,10 +4,10 @@ import os
 
 import pytest
 
-from config import config
-from dashboard import handle
-from entry_store import EntryStore
-from memoria import SEGURIDAD_BLOCK, block_contents
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK, block_contents
+from nettune.review.dashboard import handle
 
 TEMPLATE = "templates/MEMORIA.docx"
 pytestmark = pytest.mark.skipif(not os.path.exists(TEMPLATE), reason="template absent")
@@ -21,7 +21,7 @@ def store(tmp_path, monkeypatch):
     # already holds the pre-existing config object, and this is the pattern
     # test_dashboard_routes.py uses for the same reason.
     monkeypatch.setattr(config, "incoming_dir", str(tmp_path / "incoming_scans"))
-    from month_folders import ensure_month_tree
+    from nettune.report.month_folders import ensure_month_tree
     ensure_month_tree(str(tmp_path / "incoming_scans"))
     with EntryStore(str(tmp_path / "e.sqlite3")) as s:
         s.add("2026", "SEPTIEMBRE", SEGURIDAD_BLOCK,
@@ -58,7 +58,7 @@ def test_a_document_failure_does_not_lose_the_edit(store, monkeypatch):
     handle("POST", f"/entrada/{entry['id']}", address=LAN,
            form={"texto": "Se retiran pilonas.", "csrf": csrf}, store=store)
 
-    import dashboard
+    from nettune.review import dashboard
     monkeypatch.setattr(dashboard, "rebuild_memoria",
                         lambda *a, **k: (_ for _ in ()).throw(OSError("disco lleno")))
     response = handle("POST", "/guardar/2026/SEPTIEMBRE", address=LAN,

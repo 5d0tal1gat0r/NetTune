@@ -18,11 +18,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import config
-from entry_store import EntryStore
-from month_folders import revision_dir_for
-from page_rotation import header_orientation, rotate_by
-from scan_filter import IMAGE_EXTENSIONS
+from nettune.config import config
+from nettune.intake.scan_filter import IMAGE_EXTENSIONS
+from nettune.pages.page_rotation import header_orientation, rotate_by
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import revision_dir_for
 
 
 def upside_down(folder: str, hand_turned: frozenset) -> tuple[list[str], list[str]]:

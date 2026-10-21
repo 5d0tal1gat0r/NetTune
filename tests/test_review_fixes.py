@@ -3,10 +3,10 @@
 
 import pytest
 
-from month_folders import get_month_folder, is_in_archive
-from processed_ledger import ProcessedLedger
-from retry_scheduler import RetryScheduler
-from scan_filter import is_processable_scan
+from nettune.intake.processed_ledger import ProcessedLedger
+from nettune.intake.retry_scheduler import RetryScheduler
+from nettune.intake.scan_filter import is_processable_scan
+from nettune.report.month_folders import get_month_folder, is_in_archive
 
 # --- #4 off-by-one on max_attempts ---------------------------------------
 
@@ -67,7 +67,7 @@ def test_scan_under_an_archive_named_root_is_processable(tmp_path):
 
 
 def test_tiff_and_bmp_are_converted_to_a_supported_format(tmp_path):
-    from transcription_service import encode_image
+    from nettune.reading.transcription_service import encode_image
 
     pytest.importorskip("PIL")
     from PIL import Image
@@ -81,7 +81,7 @@ def test_tiff_and_bmp_are_converted_to_a_supported_format(tmp_path):
 
 
 def test_converted_payload_is_a_real_png(tmp_path):
-    from transcription_service import encode_image
+    from nettune.reading.transcription_service import encode_image
 
     pytest.importorskip("PIL")
     import base64
@@ -100,7 +100,7 @@ def test_converted_payload_is_a_real_png(tmp_path):
 def test_forget_lets_a_reused_filename_through():
     import queue
 
-    from scanner_monitor import ScanEventHandler
+    from nettune.intake.scanner_monitor import ScanEventHandler
 
     class Event:
         def __init__(self, p):
@@ -128,8 +128,7 @@ def test_ledger_uses_wal_journal(tmp_path):
 
 
 def test_digest_is_computed_once_per_scan(tmp_path, monkeypatch):
-    import processed_ledger as pl
-
+    from nettune.intake import processed_ledger as pl
     path = tmp_path / "a.jpg"
     path.write_bytes(b"bytes")
     calls = {"n": 0}

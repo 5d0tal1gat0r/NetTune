@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-from scanner_monitor import ScannerMonitor
+from nettune.intake.scanner_monitor import ScannerMonitor
 
 
 def collect(monitor, expected, timeout=15.0):

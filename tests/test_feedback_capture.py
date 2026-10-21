@@ -23,9 +23,9 @@ def _routine(page, **kw):
 
 @pytest.fixture
 def process(app, tmp_path, monkeypatch):
-    from entry_store import EntryStore
-    from processed_ledger import ProcessedLedger
-    from spend_guard import SpendGuard
+    from nettune.intake.processed_ledger import ProcessedLedger
+    from nettune.ops.spend_guard import SpendGuard
+    from nettune.report.entry_store import EntryStore
 
     def reading(image, collector=None, **kw):
         if collector is not None:
@@ -68,7 +68,7 @@ def _rows(db):
 
 
 def test_capture_on_and_off_produce_the_same_memoria(process, app, monkeypatch):
-    from processed_ledger import ProcessedLedger
+    from nettune.intake.processed_ledger import ProcessedLedger
 
     # clear_cache runs at the end of a scan; record what the cache held first.
     held = {}
@@ -123,8 +123,7 @@ def test_a_cache_hit_keeps_no_passes(process, app):
 
 
 def test_a_recorder_that_raises_changes_nothing(process, monkeypatch):
-    import nettune_feedback
-
+    from nettune.ops import nettune_feedback
     class Exploding:
         enabled = True
 
@@ -145,8 +144,7 @@ def test_a_recorder_that_raises_changes_nothing(process, monkeypatch):
 
 
 def test_reader_without_collector_is_unchanged(monkeypatch):
-    import page_reader
-
+    from nettune.reading import page_reader
     calls = iter([{"tipo": None, "titulo": "T", "fecha": "16-09-2026", "horario": None,
                    "operarios": [], "trabajos": ["Se abre Z6"]}] * 2)
     monkeypatch.setattr(page_reader, "read_page", lambda *a, **k: next(calls))
@@ -182,10 +180,10 @@ def test_stages_are_snapshots_taken_before_later_mutation(process, app, monkeypa
 
 
 def test_passes_survive_a_failed_scan_that_is_retried(app, tmp_path, monkeypatch):
-    from entry_store import EntryStore
-    from processed_ledger import ProcessedLedger
-    from spend_guard import SpendGuard
-    from transcription_service import TranscriptionError
+    from nettune.intake.processed_ledger import ProcessedLedger
+    from nettune.ops.spend_guard import SpendGuard
+    from nettune.reading.transcription_service import TranscriptionError
+    from nettune.report.entry_store import EntryStore
 
     page_a, page_b = "page-a.png", "page-b.png"
     monkeypatch.setattr(app, "page_images", lambda path, workdir: [page_a, page_b])

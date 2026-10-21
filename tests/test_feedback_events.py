@@ -2,8 +2,8 @@
 
 import pytest
 
-from entry_store import EntryStore
-from memoria_blocks import BLOCKS
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria_blocks import BLOCKS
 from ocr_feedback.recorder import make_recorder
 from ocr_feedback.store import FeedbackReader
 

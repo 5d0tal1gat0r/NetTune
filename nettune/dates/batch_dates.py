@@ -14,7 +14,7 @@ import re
 from collections import Counter
 from datetime import date, timedelta
 
-from month_folders import is_year
+from nettune.report.month_folders import is_year
 
 # How far from the batch's centre a page may sit before it looks misread.
 # A batch is one scanning session covering about a month, so no real page is

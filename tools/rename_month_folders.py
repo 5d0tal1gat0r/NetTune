@@ -31,8 +31,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import config
-from month_folders import (
+from nettune.config import config
+from nettune.report.month_folders import (
     ARCHIVE_DIR_NAME,
     DUPLICATES_DIR_NAME,
     MONTH_FOLDERS,

@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from locales import correct_names, local_numbers, tenant_names
+from nettune.report.locales import correct_names, local_numbers, tenant_names
 
 TEMPLATE = "templates/MEMORIA.docx"
 pytestmark = pytest.mark.skipif(not os.path.exists(TEMPLATE), reason="template absent")
@@ -69,8 +69,8 @@ class TestKnownMisreads:
     def test_stored_lines_are_corrected_but_not_hand_edited_ones(self, tmp_path):
         import importlib.util
 
-        from entry_store import EntryStore
-        from memoria import SEGURIDAD_BLOCK
+        from nettune.report.entry_store import EntryStore
+        from nettune.report.memoria import SEGURIDAD_BLOCK
 
         spec = importlib.util.spec_from_file_location("correct_names_tool",
                                                       "tools/correct_names.py")

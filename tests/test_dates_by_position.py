@@ -6,11 +6,11 @@ from datetime import date, timedelta
 
 import pytest
 
-from batch_dates import date_pages_by_position, dates_by_position
-from config import config
-from entry_store import EntryStore
-from month_folders import revision_dir_for
-from review_marks import image_name
+from nettune.config import config
+from nettune.dates.batch_dates import date_pages_by_position, dates_by_position
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name
 
 SRC = "SKM_4.pdf"
 
@@ -62,13 +62,13 @@ class TestPagesInAPipelineRun:
     def test_the_processor_applies_it(self):
         import inspect
 
-        import main
+        from nettune import main
         assert ("date_security_pages_by_position(readings, config.sheets_per_day)"
                 in inspect.getsource(main.process_scan))
 
     def test_a_maintenance_sheet_keeps_the_date_written_on_it(self):
         """One sheet a working day, weekends missing: position says nothing."""
-        from main import date_security_pages_by_position
+        from nettune.main import date_security_pages_by_position
 
         pages = [{"fecha": day.strftime("%d-%m-%Y"), "fecha_confident": True,
                   "tipo": "seguridad", "trabajos": []} for day in _september(8)]
@@ -121,7 +121,7 @@ class TestTheTool:
             (1, "01-09-2026"), (3, "01-09-2026"), (7, "02-09-2026")]
 
     def test_applying_moves_lines_files_and_turns(self, month, tool):
-        from sheet_dates import set_sheet_date
+        from nettune.dates.sheet_dates import set_sheet_date
         store, revision = month
         for _, _, old_ref, new in tool.plan(store, "2026", "SEPTIEMBRE", 4)[0]:
             assert set_sheet_date(store, "2026", "SEPTIEMBRE", old_ref, new, revision)[0]

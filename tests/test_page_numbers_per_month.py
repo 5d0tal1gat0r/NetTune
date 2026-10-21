@@ -11,8 +11,8 @@ both sections.
 
 import pytest
 
-from entry_store import EntryStore, review_line, sheet_order
-from review_marks import (
+from nettune.report.entry_store import EntryStore, review_line, sheet_order
+from nettune.report.review_marks import (
     image_name,
     is_maintenance_ref,
     locator,
@@ -70,9 +70,9 @@ def test_the_processor_numbers_maintenance_from_one(app, tmp_path, monkeypatch):
 
     from conftest import a_page
 
-    from entry_store import EntryStore
-    from processed_ledger import ProcessedLedger
-    from spend_guard import SpendGuard
+    from nettune.intake.processed_ledger import ProcessedLedger
+    from nettune.ops.spend_guard import SpendGuard
+    from nettune.report.entry_store import EntryStore
 
     fechas = iter(["01-09-2026", "02-09-2026"])
 
@@ -128,7 +128,7 @@ def test_redating_a_maintenance_sheet_keeps_its_mark(tmp_path):
 
 @pytest.mark.parametrize("ref", ["mant 01-09-2026 p2", "01-09-2026 p2"])
 def test_dashboard_labels_never_show_the_mark(ref):
-    from dashboard_html import _page_label, _sheet_link_label, _sheet_short_label
+    from nettune.review.dashboard_html import _page_label, _sheet_link_label, _sheet_short_label
 
     for label in (_sheet_link_label(ref), _page_label(ref), _sheet_short_label(ref)):
         assert "mant" not in label
@@ -137,7 +137,7 @@ def test_dashboard_labels_never_show_the_mark(ref):
 def test_the_open_sheet_shows_no_mark_either(tmp_path):
     import re
 
-    from dashboard import handle
+    from nettune.review.dashboard import handle
 
     with EntryStore(str(tmp_path / "e.sqlite3")) as store:
         store.record_sheet("2026", "SEPTIEMBRE", "S25C.pdf", 2, "mant 01-09-2026 p2")
@@ -156,8 +156,8 @@ def test_the_open_sheet_shows_no_mark_either(tmp_path):
 def test_each_sections_sheets_to_check_are_listed_in_its_own_part(app, tmp_path):
     import os
 
-    from entry_store import EntryStore
-    from memoria import SEGURIDAD_BLOCK, block_contents
+    from nettune.report.entry_store import EntryStore
+    from nettune.report.memoria import SEGURIDAD_BLOCK, block_contents
 
     template = os.path.join(os.path.dirname(__file__), "..", "templates", "MEMORIA.docx")
     if not os.path.exists(template):
@@ -224,7 +224,7 @@ def test_a_sheet_whose_date_does_not_fit_stays_to_check_until_answered(tmp_path)
 
 
 def test_the_sidebar_does_not_tick_a_sheet_whose_date_is_open(tmp_path):
-    from dashboard import handle
+    from nettune.review.dashboard import handle
 
     with EntryStore(str(tmp_path / "e.sqlite3")) as store:
         for page, fecha in enumerate(("01-09-2026", "02-09-2026", "13-09-2026",

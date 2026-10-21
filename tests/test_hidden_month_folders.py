@@ -8,7 +8,7 @@ sheets have since made out of date stops looking final.
 
 import os
 
-from month_folders import (
+from nettune.report.month_folders import (
     ARCHIVE_DIR_NAME,
     DUPLICATES_DIR_NAME,
     REVISION_DIR_NAME,
@@ -54,9 +54,9 @@ class TestStaleFinal:
     def _run(self, app, tmp_path, monkeypatch, rebuild):
         from conftest import a_page
 
-        from entry_store import EntryStore
-        from processed_ledger import ProcessedLedger
-        from spend_guard import SpendGuard
+        from nettune.intake.processed_ledger import ProcessedLedger
+        from nettune.ops.spend_guard import SpendGuard
+        from nettune.report.entry_store import EntryStore
 
         monkeypatch.setattr(app, "page_images", lambda path, workdir: [path])
         monkeypatch.setattr(

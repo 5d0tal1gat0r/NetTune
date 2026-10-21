@@ -17,8 +17,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from page_rotation import straighten, to_portrait
-from scan_filter import IMAGE_EXTENSIONS
+from nettune.intake.scan_filter import IMAGE_EXTENSIONS
+from nettune.pages.page_rotation import straighten, to_portrait
 
 
 def straighten_folder(folder: str, hand_turned: frozenset = frozenset()) -> list[str]:
@@ -66,8 +66,8 @@ def _hand_turned() -> frozenset:
     the tool's old behaviour -- not a reason to refuse to run.
     """
     try:
-        from config import config
-        from entry_store import EntryStore
+        from nettune.config import config
+        from nettune.report.entry_store import EntryStore
 
         with EntryStore(config.entry_db) as store:
             return store.hand_turned()

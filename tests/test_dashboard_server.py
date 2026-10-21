@@ -14,8 +14,8 @@ import urllib.request
 
 import pytest
 
-from dashboard import make_server
-from entry_store import EntryStore
+from nettune.report.entry_store import EntryStore
+from nettune.review.dashboard import make_server
 
 
 @pytest.fixture

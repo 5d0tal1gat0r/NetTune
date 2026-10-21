@@ -18,12 +18,13 @@ import re
 
 from openai import OpenAI
 
-from config import config
-from document_type import MANTENIMIENTO, SEGURIDAD
-from illegible import is_group_marker
-from locales import correct_names
-from memoria_blocks import strip_duration
-from routine_rules import (
+from nettune import ROOT
+from nettune.config import config
+from nettune.pages.document_type import MANTENIMIENTO, SEGURIDAD
+from nettune.pages.illegible import is_group_marker
+from nettune.report.locales import correct_names
+from nettune.report.memoria_blocks import strip_duration
+from nettune.report.routine_rules import (
     expand_codes,
     expand_maintenance_terms,
     is_noise,
@@ -38,7 +39,7 @@ client = OpenAI(api_key=config.openai_api_key)
 
 
 def load_prompt(filename: str) -> str:
-    path = os.path.join(os.path.dirname(__file__), "prompts", filename)
+    path = os.path.join(ROOT, "prompts", filename)
     with open(path, encoding="utf-8") as handle:
         return handle.read()
 
@@ -150,8 +151,8 @@ def apply_filter(
             entry["coherent"] = coherent[index]
 
     if page.get("tipo") == MANTENIMIENTO:
-        from memoria_blocks import PARKING as PARKING_BLOCK
-        from memoria_blocks import decide as decide_block
+        from nettune.report.memoria_blocks import PARKING as PARKING_BLOCK
+        from nettune.report.memoria_blocks import decide as decide_block
 
         answers = blocks if blocks and len(blocks) == len(entries) else [None] * len(entries)
         for entry, answer in zip(entries, answers, strict=True):

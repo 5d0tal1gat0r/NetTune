@@ -28,11 +28,11 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import config
-from entry_store import EntryStore
-from month_folders import revision_dir_for
-from review_marks import plain_ref
-from sheet_dates import renumber_files
+from nettune.config import config
+from nettune.dates.sheet_dates import renumber_files
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import plain_ref
 
 
 def plan(store: EntryStore, year: str, month: str, day_order: list[int]):

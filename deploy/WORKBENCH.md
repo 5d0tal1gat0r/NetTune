@@ -141,7 +141,7 @@ DAY=$(ls ~/NetTuneData/backups | tail -1)
 ./venv/bin/python -m ocr_feedback export \
     --profile feedback/nettune.toml \
     --feedback-db ~/NetTuneData/backups/$DAY/feedback.sqlite3 \
-    --adapter nettune_feedback:truth_source \
+    --adapter nettune.ops.nettune_feedback:truth_source \
     --adapter-arg entries_db=$HOME/NetTuneData/backups/$DAY/memoria_entries.sqlite3 \
     --adapter-arg year=2026 --adapter-arg month=OCTUBRE \
     --out ~/NetTuneData/datasets --label 2026-10

@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from processed_ledger import ProcessedLedger
+from nettune.intake.processed_ledger import ProcessedLedger
 
 
 @pytest.fixture

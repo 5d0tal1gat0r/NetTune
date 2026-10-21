@@ -4,12 +4,12 @@ import os
 
 import pytest
 
-from config import config
-from dashboard import handle
-from entry_store import EntryStore
-from memoria import SEGURIDAD_BLOCK
-from month_folders import revision_dir_for
-from review_marks import image_name
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name
+from nettune.review.dashboard import handle
 
 LAN = "192.168.50.41"
 SRC = "SKM_V.pdf"
@@ -101,8 +101,8 @@ class TestTheProcessorKeepsBlankSheets:
         opened and nothing could be added to it."""
         from conftest import a_page
 
-        from processed_ledger import ProcessedLedger
-        from spend_guard import SpendGuard
+        from nettune.intake.processed_ledger import ProcessedLedger
+        from nettune.ops.spend_guard import SpendGuard
 
         images = []
         for n in (1, 2):

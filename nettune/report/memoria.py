@@ -19,7 +19,7 @@ import unicodedata
 
 from docx import Document
 
-from memoria_monthly import fill_monthly
+from nettune.report.memoria_monthly import fill_monthly
 
 # Bold subheadings inside 3.1.2 Correctivo, in document order.
 MANTENIMIENTO_BLOCKS = (

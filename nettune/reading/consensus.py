@@ -12,7 +12,7 @@ import unicodedata
 from collections import Counter
 from difflib import SequenceMatcher
 
-from routine_rules import strip_time_prefix
+from nettune.report.routine_rules import strip_time_prefix
 
 # Two entries this similar after normalisation are the same line, read slightly
 # differently, rather than two different lines.

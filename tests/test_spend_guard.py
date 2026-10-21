@@ -2,7 +2,7 @@
 
 import pytest
 
-from spend_guard import BudgetExceeded, SpendGuard, cost_usd
+from nettune.ops.spend_guard import BudgetExceeded, SpendGuard, cost_usd
 
 
 @pytest.fixture

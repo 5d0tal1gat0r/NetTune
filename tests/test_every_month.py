@@ -12,15 +12,20 @@ from datetime import date, datetime
 import pytest
 from PIL import Image, ImageDraw
 
-import main
-import month_folders
-from config import config
-from dashboard import handle
-from document_type import SEGURIDAD
-from entry_store import EntryStore
-from month_folders import MONTH_FOLDERS, memoria_name, processed_dir_for, revision_dir_for
-from processed_ledger import ProcessedLedger
-from spend_guard import SpendGuard
+from nettune import main
+from nettune.config import config
+from nettune.intake.processed_ledger import ProcessedLedger
+from nettune.ops.spend_guard import SpendGuard
+from nettune.pages.document_type import SEGURIDAD
+from nettune.report import month_folders
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import (
+    MONTH_FOLDERS,
+    memoria_name,
+    processed_dir_for,
+    revision_dir_for,
+)
+from nettune.review.dashboard import handle
 
 TEMPLATE = os.path.abspath("templates/MEMORIA.docx")
 LAN = "192.168.50.41"
@@ -204,22 +209,22 @@ class TestFilingMonths:
         return [{"fecha": d} for d in dates]
 
     def test_one_misread_date_does_not_move_a_sheet(self):
-        from batch_dates import filing_months
+        from nettune.dates.batch_dates import filing_months
         pages = self.pages(*(["01-09-2026"] * 4 + ["31-08-2026"] + ["02-09-2026"] * 3))
         assert set(filing_months(pages, "2026", "SEPTIEMBRE", 4)) == {("2026", "SEPTIEMBRE")}
 
     def test_a_whole_batch_in_the_wrong_folder_goes_to_its_month(self):
-        from batch_dates import filing_months
+        from nettune.dates.batch_dates import filing_months
         pages = self.pages(*(["01-10-2026"] * 4 + ["02-10-2026"] * 4))
         assert set(filing_months(pages, "2026", "SEPTIEMBRE", 4)) == {("2026", "OCTUBRE")}
 
     def test_a_month_further_away_is_a_misreading_and_stays(self):
-        from batch_dates import filing_months
+        from nettune.dates.batch_dates import filing_months
         pages = self.pages(*(["01-09-2026"] * 4 + ["05-11-2026"] * 4))
         assert set(filing_months(pages, "2026", "SEPTIEMBRE", 4)) == {("2026", "SEPTIEMBRE")}
 
     def test_undated_sheets_stay_in_the_folder(self):
-        from batch_dates import filing_months
+        from nettune.dates.batch_dates import filing_months
         pages = self.pages(*(["01-10-2026"] * 4 + [None]))
         assert filing_months(pages, "2026", "SEPTIEMBRE", 4)[-1] == ("2026", "SEPTIEMBRE")
 
@@ -254,7 +259,7 @@ class TestThePromptKnowsTheYear:
         (date(2031, 6, 1), "2031", "2030"),
     ])
     def test_the_years_follow_the_calendar(self, today, now, before):
-        from transcription_service import load_prompt, with_year
+        from nettune.reading.transcription_service import load_prompt, with_year
         prompt = with_year(load_prompt("transcription.md"), today)
         assert f"de {now}, o de {before}" in prompt
         assert "{AÑO" not in prompt
@@ -292,7 +297,7 @@ class TestDroppedAnywhere:
             store.close()
 
     def test_the_same_file_dropped_again_goes_beside_its_month_unread(self, run, tmp_path):
-        from processed_ledger import ProcessedLedger
+        from nettune.intake.processed_ledger import ProcessedLedger
         outcome, store, *_ = run(2026, 9, days=1, folder=())
         store.close()
         assert outcome == "processed"

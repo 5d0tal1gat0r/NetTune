@@ -1,6 +1,6 @@
 import pytest
 
-from transcription_service import data_url_mime
+from nettune.reading.transcription_service import data_url_mime
 
 
 @pytest.mark.parametrize(

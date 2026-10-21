@@ -5,7 +5,7 @@ import os
 import pytest
 from PIL import Image, ImageDraw
 
-from same_paper import MATCH, already_read, signature, similarity
+from nettune.pages.same_paper import MATCH, already_read, signature, similarity
 
 
 def _sheet(path, seed, noise=0):
@@ -79,9 +79,9 @@ def test_different_sheets_score_well_below_the_bar(tmp_path):
 
 class TestTheProcessorSetsItAside:
     def test_no_reading_is_paid_for_and_the_file_is_kept(self, app, tmp_path, monkeypatch):
-        from entry_store import EntryStore
-        from processed_ledger import ProcessedLedger
-        from spend_guard import SpendGuard
+        from nettune.intake.processed_ledger import ProcessedLedger
+        from nettune.ops.spend_guard import SpendGuard
+        from nettune.report.entry_store import EntryStore
 
         revision = os.path.join(app.incoming, "2026", "SEPTIEMBRE", ".revision")
         os.makedirs(revision, exist_ok=True)
@@ -106,12 +106,12 @@ class TestTheProcessorSetsItAside:
         assert ledger.already_processed(kept)
 
     def test_the_duplicates_folder_is_never_scanned(self):
-        from month_folders import is_in_archive
+        from nettune.report.month_folders import is_in_archive
         assert is_in_archive("incoming/2026/SEPTIEMBRE/duplicados/SKM_R.pdf", "incoming")
 
 
 def test_signatures_of_saved_sheets_are_cached_and_pruned(month, tmp_path):
-    import same_paper
+    from nettune.pages import same_paper
     same_paper._CACHE.clear()
     already_read([_sheet(tmp_path / "n.jpg", seed=500)], month)
     assert len(same_paper._CACHE) == 8

@@ -8,7 +8,7 @@ read as "cobre" by most passes.
 
 import pytest
 
-from consensus import consolidate, normalize
+from nettune.reading.consensus import consolidate, normalize
 
 
 def read(fecha="02-07-2026", operarios=("A. Ejemplo",), trabajos=()):

@@ -7,7 +7,7 @@ unit a person actually checks -- they open the image and read the whole sheet
 -- so the document names the pages, and the entries are left clean.
 """
 
-from entry_store import EntryStore, review_line
+from nettune.report.entry_store import EntryStore, review_line
 
 
 class TestReviewLine:

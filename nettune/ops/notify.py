@@ -18,8 +18,8 @@ import ssl
 import time
 from email.message import EmailMessage
 
-from config import config
-from entry_store import MANTENIMIENTO_SECTION, SEGURIDAD_SECTION
+from nettune.config import config
+from nettune.report.entry_store import MANTENIMIENTO_SECTION, SEGURIDAD_SECTION
 
 MAX_SEND_ATTEMPTS = 3
 RETRY_SECONDS = 300

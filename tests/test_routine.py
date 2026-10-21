@@ -10,9 +10,9 @@ import os
 
 import pytest
 
-from entry_store import EntryStore
-from filtering_agents import apply_filter
-from memoria import SEGURIDAD_BLOCK, block_contents, fill_memoria
+from nettune.reading.filtering_agents import apply_filter
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK, block_contents, fill_memoria
 
 TEMPLATE = "templates/MEMORIA.docx"
 

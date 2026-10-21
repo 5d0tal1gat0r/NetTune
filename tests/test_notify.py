@@ -4,10 +4,10 @@ import smtplib
 
 import pytest
 
-import notify
-from config import config
-from entry_store import EntryStore
-from memoria import SEGURIDAD_BLOCK
+from nettune.config import config
+from nettune.ops import notify
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK
 
 
 @pytest.fixture

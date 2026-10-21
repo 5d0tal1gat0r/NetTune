@@ -3,8 +3,8 @@ import shutil
 import pytest
 from PIL import Image
 
-import page_rotation
-from page_rotation import detect_rotation, straighten, to_portrait
+from nettune.pages import page_rotation
+from nettune.pages.page_rotation import detect_rotation, straighten, to_portrait
 
 needs_tesseract = pytest.mark.skipif(
     shutil.which("tesseract") is None, reason="tesseract absent"

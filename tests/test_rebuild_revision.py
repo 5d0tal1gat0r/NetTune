@@ -6,10 +6,10 @@ import os
 import pytest
 from PIL import Image, ImageDraw
 
-from config import config
-from entry_store import EntryStore
-from month_folders import revision_dir_for
-from review_marks import image_name
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name
 
 _spec = importlib.util.spec_from_file_location(
     "rebuild_revision",

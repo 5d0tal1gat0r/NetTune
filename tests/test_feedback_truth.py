@@ -7,10 +7,10 @@ import sys
 
 import pytest
 
-from entry_store import EntryStore
-from memoria_blocks import BLOCKS
+from nettune.ops import nettune_feedback
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria_blocks import BLOCKS
 from ocr_feedback.recorder import make_recorder
-import nettune_feedback
 
 Y, M, SRC = "2026", "SEPTIEMBRE", "SKM_1.pdf"
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -74,7 +74,7 @@ def test_export_end_to_end(entries, tmp_path):
     out = subprocess.run(
         [sys.executable, "-m", "ocr_feedback", "export",
          "--profile", os.path.join(REPO, "feedback", "nettune.toml"),
-         "--feedback-db", fb, "--adapter", "nettune_feedback:truth_source",
+         "--feedback-db", fb, "--adapter", "nettune.ops.nettune_feedback:truth_source",
          "--adapter-arg", f"entries_db={path}", "--adapter-arg", f"year={Y}",
          "--adapter-arg", f"month={M}", "--out", str(tmp_path / "ds"), "--label", "sep"],
         cwd=REPO, capture_output=True, text=True, check=True)
@@ -90,7 +90,7 @@ def test_export_without_feedback_db(entries, tmp_path):
     from ocr_feedback.cli import main
 
     assert main(["export", "--profile", os.path.join(REPO, "feedback", "nettune.toml"),
-                 "--adapter", "nettune_feedback:truth_source",
+                 "--adapter", "nettune.ops.nettune_feedback:truth_source",
                  "--adapter-arg", f"entries_db={path}",
                  "--out", str(tmp_path / "ds"), "--label", "old"]) == 0
     folder = str(tmp_path / "ds" / "nettune-old")
@@ -103,8 +103,7 @@ def test_export_without_feedback_db(entries, tmp_path):
 def test_no_temp_copy_left_when_the_store_fails_to_open(entries, tmp_path, monkeypatch):
     import tempfile
 
-    import entry_store
-
+    from nettune.report import entry_store
     scratch = tmp_path / "scratch"
     scratch.mkdir()
     monkeypatch.setattr(tempfile, "tempdir", str(scratch))

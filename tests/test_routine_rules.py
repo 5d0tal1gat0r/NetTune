@@ -1,6 +1,6 @@
 import pytest
 
-from routine_rules import is_routine_text, strip_time_prefix, tidy_caps
+from nettune.report.routine_rules import is_routine_text, strip_time_prefix, tidy_caps
 
 
 @pytest.mark.parametrize("raw,expected", [
@@ -149,7 +149,7 @@ def test_an_incident_that_ends_sin_novedad_is_still_an_event():
 
 @pytest.mark.parametrize("text", ["22:10 -", "23:40 -", "02:05 S.A. ...", "", "   ", "-"])
 def test_lines_that_lost_their_words_are_noise(text):
-    from routine_rules import is_noise
+    from nettune.report.routine_rules import is_noise
     assert is_noise(text), text
 
 
@@ -159,7 +159,7 @@ def test_lines_that_lost_their_words_are_noise(text):
     "Se llama la atencion a una persona",
 ])
 def test_real_entries_are_not_noise(text):
-    from routine_rules import is_noise
+    from nettune.report.routine_rules import is_noise
     assert not is_noise(text), text
 
 

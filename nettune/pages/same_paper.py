@@ -22,7 +22,7 @@ import os
 
 from PIL import Image, ImageFilter
 
-from scan_filter import IMAGE_EXTENSIONS
+from nettune.intake.scan_filter import IMAGE_EXTENSIONS
 
 MATCH = 0.90
 _SIZE = (48, 64)

@@ -1,6 +1,6 @@
 import pytest
 
-from routine_rules import expand_codes
+from nettune.report.routine_rules import expand_codes
 
 
 @pytest.mark.parametrize("raw,expected", [

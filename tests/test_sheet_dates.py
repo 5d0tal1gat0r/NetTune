@@ -5,11 +5,11 @@ import os
 
 import pytest
 
-from config import config
-from dashboard import handle
-from entry_store import HAND_SOURCE, EntryStore
-from month_folders import revision_dir_for
-from review_marks import image_name, legacy_image_name
+from nettune.config import config
+from nettune.report.entry_store import HAND_SOURCE, EntryStore
+from nettune.report.month_folders import revision_dir_for
+from nettune.report.review_marks import image_name, legacy_image_name
+from nettune.review.dashboard import handle
 
 LAN = "192.168.50.41"
 SRC = "SKM_7.pdf"

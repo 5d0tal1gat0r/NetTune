@@ -1,10 +1,10 @@
 """A stretch nobody can read becomes one line, flagged, and never hidden."""
 
-from entry_store import EntryStore
-from filtering_agents import apply_filter
-from illegible import ILLEGIBLE_GROUP, collapse
-from memoria import SEGURIDAD_BLOCK
-from routine_rules import is_noise, is_routine_text, reads_as_event
+from nettune.pages.illegible import ILLEGIBLE_GROUP, collapse
+from nettune.reading.filtering_agents import apply_filter
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK
+from nettune.report.routine_rules import is_noise, is_routine_text, reads_as_event
 
 
 def e(text, confident=True):

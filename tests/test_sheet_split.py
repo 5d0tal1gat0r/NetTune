@@ -10,7 +10,7 @@ across shifts and why one of the two dates on a page went missing.
 import numpy as np
 import pytest
 
-from sheet_split import find_gutter, split_sheets
+from nettune.pages.sheet_split import find_gutter, split_sheets
 
 
 def sheet(width, height, ink_rows):

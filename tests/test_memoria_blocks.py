@@ -1,6 +1,6 @@
 import pytest
 
-from memoria_blocks import (
+from nettune.report.memoria_blocks import (
     ASCENSORES,
     BLOCKS,
     ELECTRICIDAD,

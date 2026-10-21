@@ -63,9 +63,10 @@ if [[ "$SOURCE_DIR" != "$APP_DIR" ]]; then
     # Glob inside SOURCE_DIR, not the caller's working directory.
     # Drop modules deleted upstream so they cannot still be imported.
     find "$APP_DIR" -maxdepth 1 -name '*.py' -delete
+    rm -rf "$APP_DIR/nettune" "$APP_DIR/ocr_feedback"
     ( cd "$SOURCE_DIR" || exit 1
       # Not tests: development only, and deploy.sh never updates them.
-      for item in *.py prompts templates deploy \
+      for item in *.py nettune ocr_feedback tools feedback prompts templates deploy \
                   requirements.txt pytest.ini pyproject.toml; do
           [[ -e "$item" ]] || continue
           cp -r "$item" "$APP_DIR/"

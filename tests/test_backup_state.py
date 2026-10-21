@@ -86,7 +86,7 @@ def test_a_copy_that_fails_its_check_is_not_left_looking_good(tool, tmp_path, mo
 
 
 def test_the_feedback_database_is_backed_up_too(tool):
-    from config import config
+    from nettune.config import config
 
     assert config.feedback_db in tool.databases()
     assert set(tool.databases()) >= {config.entry_db, config.state_db, config.spend_db}

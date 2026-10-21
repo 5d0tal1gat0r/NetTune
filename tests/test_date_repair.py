@@ -9,7 +9,7 @@ known even when a page's own reading of it is not.
 
 import pytest
 
-from batch_dates import reconcile_batch
+from nettune.dates.batch_dates import reconcile_batch
 
 
 def page(fecha, variants=()):

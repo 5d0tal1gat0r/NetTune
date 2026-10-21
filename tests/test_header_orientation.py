@@ -7,8 +7,8 @@ import shutil
 import pytest
 from PIL import Image, ImageDraw, ImageFont
 
-from entry_store import EntryStore
-from page_rotation import header_orientation, straighten
+from nettune.pages.page_rotation import header_orientation, straighten
+from nettune.report.entry_store import EntryStore
 
 needs_tesseract = pytest.mark.skipif(shutil.which("tesseract") is None,
                                      reason="tesseract not installed")

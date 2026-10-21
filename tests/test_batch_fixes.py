@@ -2,8 +2,8 @@
 
 import pytest
 
-from entry_store import EntryStore
-from routine_rules import expand_codes, invalid_plantas, is_incoherent
+from nettune.report.entry_store import EntryStore
+from nettune.report.routine_rules import expand_codes, invalid_plantas, is_incoherent
 
 
 class TestPlAsPlanta:
@@ -74,8 +74,8 @@ class TestTenantNames:
 
         import pytest as _pytest
 
-        from config import config
-        from locales import correct_names
+        from nettune.config import config
+        from nettune.report.locales import correct_names
         if not os.path.exists(config.template_path):
             _pytest.skip("template absent")
         assert correct_names(

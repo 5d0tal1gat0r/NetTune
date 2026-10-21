@@ -10,12 +10,12 @@ import os
 
 import pytest
 
-from config import config
-from dashboard import handle
-from entry_store import EntryStore
-from memoria import SEGURIDAD_BLOCK, block_contents
-from month_folders import memoria_name, processed_dir_for, revision_dir_for
-from review_marks import image_name
+from nettune.config import config
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK, block_contents
+from nettune.report.month_folders import memoria_name, processed_dir_for, revision_dir_for
+from nettune.report.review_marks import image_name
+from nettune.review.dashboard import handle
 
 LAN = "192.168.50.41"
 TEMPLATE = os.path.abspath("templates/MEMORIA.docx")

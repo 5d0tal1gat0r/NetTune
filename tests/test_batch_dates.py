@@ -5,7 +5,7 @@ three passes -- unanimous, so not flagged by consensus alone -- and another as
 03-07-2027. Comparing each page against the batch catches both for free.
 """
 
-from batch_dates import reconcile_batch
+from nettune.dates.batch_dates import reconcile_batch
 
 
 def page(fecha, variants=None, confident=True):

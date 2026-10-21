@@ -7,7 +7,7 @@ the sheets already say which they belong to.
 
 import pytest
 
-from batch_dates import dominant_month, dominant_year
+from nettune.dates.batch_dates import dominant_month, dominant_year
 
 
 def page(fecha):
@@ -53,9 +53,9 @@ class TestTheWholeWay:
 
         from conftest import a_page
 
-        from entry_store import EntryStore
-        from processed_ledger import ProcessedLedger
-        from spend_guard import SpendGuard
+        from nettune.intake.processed_ledger import ProcessedLedger
+        from nettune.ops.spend_guard import SpendGuard
+        from nettune.report.entry_store import EntryStore
 
         monkeypatch.setattr(app, "page_images", lambda path, workdir: [path])
         monkeypatch.setattr(
@@ -94,7 +94,7 @@ class TestTheWholeWay:
         September were lost that way."""
         import os
 
-        from entry_store import EntryStore
+        from nettune.report.entry_store import EntryStore
 
         self._run(app, tmp_path, monkeypatch, "SKM_0003.pdf")
         with EntryStore(str(tmp_path / "state" / "e.sqlite3")) as store:
@@ -118,7 +118,7 @@ class TestTheWholeWay:
             self, app, tmp_path, monkeypatch):
         import pytest as _pytest
 
-        from transcription_service import TranscriptionError
+        from nettune.reading.transcription_service import TranscriptionError
 
         with _pytest.raises(TranscriptionError, match="no date on it could be read"):
             self._run(app, tmp_path, monkeypatch, "SKM_0003.pdf", fecha=None)

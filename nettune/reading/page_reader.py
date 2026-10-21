@@ -7,12 +7,12 @@ a silent error into a flagged line.
 
 import logging
 
-from config import config
-from consensus import consolidate
-from document_type import decide
-from illegible import collapse
-from spend_guard import BudgetExceeded
-from transcription_service import RefusalError, TranscriptionError, read_page
+from nettune.config import config
+from nettune.ops.spend_guard import BudgetExceeded
+from nettune.pages.document_type import decide
+from nettune.pages.illegible import collapse
+from nettune.reading.consensus import consolidate
+from nettune.reading.transcription_service import RefusalError, TranscriptionError, read_page
 
 
 def read_page_with_consensus(

@@ -3,10 +3,15 @@ routine, and the two signs that a line is Parking."""
 
 import pytest
 
-from consensus import consolidate
-from filtering_agents import apply_filter
-from memoria_blocks import ELECTRICIDAD, OTROS, PARKING, decide
-from routine_rules import expand_codes, expand_maintenance_terms, is_routine_text, name_companies
+from nettune.reading.consensus import consolidate
+from nettune.reading.filtering_agents import apply_filter
+from nettune.report.memoria_blocks import ELECTRICIDAD, OTROS, PARKING, decide
+from nettune.report.routine_rules import (
+    expand_codes,
+    expand_maintenance_terms,
+    is_routine_text,
+    name_companies,
+)
 
 
 @pytest.mark.parametrize("raw, expected", [
@@ -161,6 +166,6 @@ class TestPrompts:
 
 
 def test_the_new_words_still_say_maintenance():
-    from document_type import MANTENIMIENTO, classify
+    from nettune.pages.document_type import MANTENIMIENTO, classify
     assert classify("", ["Conectando mq de aire", "Revisión fosa séptica",
                          "Cambio de fluxómetro en urinario"]) == MANTENIMIENTO

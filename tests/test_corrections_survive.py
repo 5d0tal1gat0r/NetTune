@@ -8,7 +8,7 @@ the correction as a second entry saying the same thing badly.
 
 import pytest
 
-from entry_store import EntryStore
+from nettune.report.entry_store import EntryStore
 
 
 @pytest.fixture

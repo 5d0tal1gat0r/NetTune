@@ -18,14 +18,14 @@ import unicodedata
 from datetime import date, datetime, timezone
 from typing import NamedTuple
 
-from illegible import ILLEGIBLE_GROUP, is_group_marker
-from memoria_blocks import BLOCKS as MANTENIMIENTO_BLOCKS
-from month_folders import month_sort_key
-from nettune_feedback import page_id as feedback_page_id
-from nettune_feedback import ref_page_id
+from nettune.ops.nettune_feedback import page_id as feedback_page_id
+from nettune.ops.nettune_feedback import ref_page_id
+from nettune.pages.illegible import ILLEGIBLE_GROUP, is_group_marker
+from nettune.report.memoria_blocks import BLOCKS as MANTENIMIENTO_BLOCKS
+from nettune.report.month_folders import month_sort_key
+from nettune.report.review_marks import MAINTENANCE_MARK, is_maintenance_ref, plain_ref, same_kind
 from ocr_feedback.model import ReviewEvent
 from ocr_feedback.recorder import NullRecorder
-from review_marks import MAINTENANCE_MARK, is_maintenance_ref, plain_ref, same_kind
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS memoria_entries (
@@ -177,7 +177,7 @@ def _longest_non_decreasing(values: list[int]) -> set[int]:
 
 def _in_month(date_text: str, year: str, month: str) -> bool:
     """True for a real DD-MM-YYYY that falls in the folder's year and month."""
-    from month_folders import MONTH_FOLDERS
+    from nettune.report.month_folders import MONTH_FOLDERS
 
     match = re.fullmatch(r"(\d{2})-(\d{2})-(\d{4})", date_text or "")
     if not match:

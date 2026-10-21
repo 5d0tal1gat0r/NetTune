@@ -2,8 +2,8 @@
 
 import os
 
-from main import save_review_image
-from month_folders import REVISION_DIR_NAME, revision_dir_for
+from nettune.main import save_review_image
+from nettune.report.month_folders import REVISION_DIR_NAME, revision_dir_for
 
 
 def make_image(path: str) -> str:
@@ -47,6 +47,6 @@ def test_a_page_that_cannot_be_copied_does_not_stop_the_run(tmp_path):
 
 
 def test_the_month_tree_creates_the_folder(tmp_path):
-    from month_folders import ensure_month_tree
+    from nettune.report.month_folders import ensure_month_tree
     ensure_month_tree(str(tmp_path))
     assert os.path.isdir(revision_dir_for(str(tmp_path), "2026", "JUNIO"))

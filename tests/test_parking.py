@@ -14,9 +14,9 @@ from PIL import Image
 
 @pytest.fixture
 def run(app, tmp_path, monkeypatch):
-    from entry_store import EntryStore
-    from processed_ledger import ProcessedLedger
-    from spend_guard import SpendGuard
+    from nettune.intake.processed_ledger import ProcessedLedger
+    from nettune.ops.spend_guard import SpendGuard
+    from nettune.report.entry_store import EntryStore
 
     reads, splits = [], []
 
@@ -69,7 +69,7 @@ def test_ticket_pages_in_a_mixed_scan_are_cut_out_and_the_rest_is_read(app, run)
     assert len(run.reads) == 2
     parking = os.path.join(app.incoming, "Parking")
     assert os.listdir(parking) == ["S25C-0i26093012540_parking.pdf"]
-    from pdf_pages import page_count
+    from nettune.intake.pdf_pages import page_count
     assert page_count(os.path.join(parking, "S25C-0i26093012540_parking.pdf")) == 1
 
 
@@ -81,7 +81,7 @@ def test_a_maintenance_page_is_read_whole_and_a_security_page_split(app, run):
 
 
 def test_the_parking_folder_is_never_scanned(app):
-    from scan_filter import is_processable_scan
+    from nettune.intake.scan_filter import is_processable_scan
 
     path = os.path.join(app.incoming, "Parking", "S25C.pdf")
     os.makedirs(os.path.dirname(path), exist_ok=True)

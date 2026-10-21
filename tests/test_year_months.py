@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from month_folders import (
+from nettune.report.month_folders import (
     MONTH_FOLDERS,
     archive_dir_for,
     ensure_month_tree,

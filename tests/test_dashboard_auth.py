@@ -7,7 +7,7 @@ apart from the colleague's by the fact that he arrives over Tailscale.
 
 import pytest
 
-from dashboard_auth import (
+from nettune.review.dashboard_auth import (
     is_allowed,
     new_token,
     sees_advanced,
@@ -74,7 +74,7 @@ class TestTheNameItAnswersTo:
 
     @pytest.fixture(autouse=True)
     def named(self, monkeypatch):
-        import dashboard_auth
+        from nettune.review import dashboard_auth
         monkeypatch.setattr(dashboard_auth.socket, "gethostname", lambda: "RaspberryPi")
         monkeypatch.setenv("DASHBOARD_HOSTNAMES", "")
 
@@ -82,17 +82,17 @@ class TestTheNameItAnswersTo:
                                       "RASPBERRYPI.LOCAL:8080", "192.168.50.37:8080",
                                       "localhost:8080"])
     def test_it_answers_to_its_own_name_and_addresses(self, host):
-        from dashboard_auth import is_allowed_host
+        from nettune.review.dashboard_auth import is_allowed_host
         assert is_allowed_host(host)
 
     @pytest.mark.parametrize("host", ["evil.example:8080", "raspberrypi.local.evil.example",
                                       "raspberrypi", "otherpi.local:8080", "8.8.8.8", ""])
     def test_anything_else_is_refused(self, host):
-        from dashboard_auth import is_allowed_host
+        from nettune.review.dashboard_auth import is_allowed_host
         assert not is_allowed_host(host)
 
     def test_more_names_can_be_given(self, monkeypatch):
-        from dashboard_auth import is_allowed_host
+        from nettune.review.dashboard_auth import is_allowed_host
         monkeypatch.setenv("DASHBOARD_HOSTNAMES", "nettune.local, Dashboard.Station")
         assert is_allowed_host("nettune.local:8080")
         assert is_allowed_host("dashboard.station")

@@ -97,7 +97,7 @@ def _forget(store, revision_dir: str, year: str, month: str, source: str,
     The review images are moved into *held*, not deleted, so a reading that
     fails can put them back.
     """
-    from review_marks import image_name
+    from nettune.report.review_marks import image_name
 
     for sheet in _sheets(store, year, month, source).values():
         name = image_name(sheet["ref"])
@@ -122,9 +122,9 @@ def _drop(store, source: str, position: int) -> list[str]:
     Looked for in every month: a sheet's own date files it, so the one
     dropped -- because it does not belong -- may well have gone elsewhere.
     """
-    from config import config
-    from month_folders import revision_dir_for
-    from review_marks import image_name
+    from nettune.config import config
+    from nettune.report.month_folders import revision_dir_for
+    from nettune.report.review_marks import image_name
 
     rows = store._connection.execute(
         "SELECT year, month, review_ref FROM scan_sheets "
@@ -150,7 +150,7 @@ def _drop(store, source: str, position: int) -> list[str]:
 def _restore(store, revision_dir: str, year: str, month: str, source: str,
              before: dict[int, dict]) -> list[str]:
     """Put back the dates and empty sheets a person checked. Returns notes."""
-    from review_marks import image_name
+    from nettune.report.review_marks import image_name
 
     notes = []
     after = _sheets(store, year, month, source)
@@ -194,9 +194,14 @@ def reread(store, ledger, guard, year: str, month: str, source: str,
     archive under its own name; if the reading fails it is put back where it
     was, and the error raised.
     """
-    import main
-    from config import config
-    from month_folders import archive_dir_for, memoria_name, processed_dir_for, revision_dir_for
+    from nettune import main
+    from nettune.config import config
+    from nettune.report.month_folders import (
+        archive_dir_for,
+        memoria_name,
+        processed_dir_for,
+        revision_dir_for,
+    )
 
     archived = os.path.join(archive_dir_for(config.incoming_dir, year, month), source)
     if not os.path.isfile(archived):
@@ -262,10 +267,10 @@ def main_cli() -> int:
         print("security-log-processor is running; stop it first.")
         return 2
 
-    from config import config
-    from entry_store import EntryStore
-    from processed_ledger import ProcessedLedger
-    from spend_guard import SpendGuard
+    from nettune.config import config
+    from nettune.intake.processed_ledger import ProcessedLedger
+    from nettune.ops.spend_guard import SpendGuard
+    from nettune.report.entry_store import EntryStore
     from tools.backup_state import backup
 
     dest = os.path.join(config.backup_dir, "before-reread")

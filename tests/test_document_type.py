@@ -8,7 +8,7 @@ silently route a sheet to the wrong filter.
 
 import pytest
 
-from document_type import MANTENIMIENTO, SEGURIDAD, UNKNOWN, classify, normalise
+from nettune.pages.document_type import MANTENIMIENTO, SEGURIDAD, UNKNOWN, classify, normalise
 
 # --- normalising whatever the model returned ------------------------------
 
@@ -79,14 +79,14 @@ def test_ambiguous_content_is_unknown_rather_than_guessed():
 
 
 def test_a_trusted_model_answer_is_used_when_content_is_ambiguous():
-    from document_type import decide
+    from nettune.pages.document_type import decide
 
     assert decide("seguridad", "", ["Apertura del muelle"]) == SEGURIDAD
 
 
 def test_content_overrides_a_model_answer_that_contradicts_it():
     """A confident vocabulary match beats the model's label."""
-    from document_type import decide
+    from nettune.pages.document_type import decide
 
     entries = ["Revisando cuadros eléctricos", "Conectando mg de aire",
                "Con la obra de cargadores en parking 2-6"]
@@ -94,6 +94,6 @@ def test_content_overrides_a_model_answer_that_contradicts_it():
 
 
 def test_unknown_model_answer_falls_back_to_content():
-    from document_type import decide
+    from nettune.pages.document_type import decide
 
     assert decide(None, "FICHA DIARIA DE TRABAJO DE MANTENIMIENTO", []) == MANTENIMIENTO

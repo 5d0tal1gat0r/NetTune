@@ -1,7 +1,7 @@
 """A reprocess says how many corrections it kept."""
 
-from entry_store import EntryStore
-from main import kept_corrections_report
+from nettune.main import kept_corrections_report
+from nettune.report.entry_store import EntryStore
 
 
 def test_it_says_nothing_when_there_are_none():

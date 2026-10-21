@@ -11,7 +11,7 @@ import os
 
 import pytest
 
-from spend_guard import BudgetExceeded, OutOfCredit
+from nettune.ops.spend_guard import BudgetExceeded, OutOfCredit
 
 
 class _QuotaError(Exception):
@@ -54,8 +54,7 @@ def image(tmp_path):
 
 
 def test_no_credit_is_its_own_error(monkeypatch, image):
-    import transcription_service
-
+    from nettune.reading import transcription_service
     monkeypatch.setattr(transcription_service, "client", _client_raising(_QuotaError()))
     # The class that module raises: other tests may have re-imported spend_guard.
     with pytest.raises(transcription_service.OutOfCredit):
@@ -67,8 +66,7 @@ def test_it_stops_like_the_monthly_cap_does():
 
 
 def test_a_busy_api_is_still_retried(monkeypatch, image):
-    import transcription_service
-
+    from nettune.reading import transcription_service
     monkeypatch.setattr(transcription_service, "client", _client_raising(_Busy("slow down")))
     with pytest.raises(transcription_service.TranscriptionError):
         transcription_service.read_page(image)
@@ -76,11 +74,10 @@ def test_a_busy_api_is_still_retried(monkeypatch, image):
 
 def test_the_scan_is_left_waiting_with_one_email(kit, monkeypatch):
     app, ledger, retries, monitor, guard = kit
-    from entry_store import EntryStore
-
     # The app fixture imports its modules afresh: the class main catches is
     # this one, not the one imported at the top of the file.
-    from spend_guard import OutOfCredit
+    from nettune.ops.spend_guard import OutOfCredit
+    from nettune.report.entry_store import EntryStore
 
     def no_credit(*a, **k):
         raise OutOfCredit("no credit")

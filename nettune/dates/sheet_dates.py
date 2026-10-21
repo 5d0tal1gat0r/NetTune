@@ -9,8 +9,8 @@ both come through here.
 import logging
 import os
 
-from entry_store import EntryStore
-from review_marks import image_name, plain_ref, same_kind
+from nettune.report.entry_store import EntryStore
+from nettune.report.review_marks import image_name, plain_ref, same_kind
 
 
 def set_sheet_date(store: EntryStore, year: str, month: str, review_ref: str,

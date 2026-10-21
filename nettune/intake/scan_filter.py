@@ -8,7 +8,7 @@ without an allowlist the watcher would happily send them back to the Vision API.
 import os
 from collections.abc import Iterator
 
-from month_folders import OUTPUT_DIR_NAMES, is_in_archive
+from nettune.report.month_folders import OUTPUT_DIR_NAMES, is_in_archive
 
 # Formats the OpenAI Vision API accepts as a data URL.
 IMAGE_EXTENSIONS = frozenset(

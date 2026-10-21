@@ -1,6 +1,6 @@
 import os
 
-from month_folders import (
+from nettune.report.month_folders import (
     MONTH_FOLDERS,
     archive_dir_for,
     get_month_folder,

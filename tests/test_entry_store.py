@@ -2,7 +2,7 @@ import sqlite3
 
 import pytest
 
-from entry_store import EntryStore, RetagResult
+from nettune.report.entry_store import EntryStore, RetagResult
 
 
 @pytest.fixture
@@ -131,7 +131,7 @@ class TestPaperOrderMigration:
 
 
 def test_legacy_paper_order():
-    from entry_store import legacy_paper_order
+    from nettune.report.entry_store import legacy_paper_order
     assert legacy_paper_order("Electricidad y Alumbrado", 4) == 4.0
     assert legacy_paper_order("Ascensores, rampas, escaleras y puertas", 4) == 10004.0
     assert legacy_paper_order("Otros", 0) == 30000.0
@@ -364,7 +364,7 @@ class TestReviewFixes:
         assert store.month_entries("2026", "SEPTIEMBRE")[0]["paper_order"] == 1.0
 
     def test_an_unreadable_stretch_can_be_retagged_next_to_another(self, store):
-        from illegible import ILLEGIBLE_GROUP
+        from nettune.pages.illegible import ILLEGIBLE_GROUP
         store.add("2026", "SEPTIEMBRE", ELEC, [line(ILLEGIBLE_GROUP, 0)], "m.pdf",
                   "mant 03-09-2026 p1")
         store.add("2026", "SEPTIEMBRE", OTROS_B, [line(ILLEGIBLE_GROUP, 0)], "m.pdf",

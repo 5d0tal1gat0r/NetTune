@@ -11,8 +11,8 @@ def _fresh_config(monkeypatch, value):
         monkeypatch.delenv("DATASET_CAPTURE", raising=False)
     else:
         monkeypatch.setenv("DATASET_CAPTURE", value)
-    monkeypatch.delitem(sys.modules, "config", raising=False)
-    return importlib.import_module("config").config
+    monkeypatch.delitem(sys.modules, "nettune.config", raising=False)
+    return importlib.import_module("nettune.config").config
 
 
 @pytest.mark.parametrize("value,expected", [
@@ -26,13 +26,12 @@ def test_capture_switch_values(monkeypatch, value, expected):
 
 def test_feedback_db_default(monkeypatch):
     monkeypatch.delenv("FEEDBACK_DB", raising=False)
-    monkeypatch.delitem(sys.modules, "config", raising=False)
-    assert importlib.import_module("config").config.feedback_db == "state/feedback.sqlite3"
+    monkeypatch.delitem(sys.modules, "nettune.config", raising=False)
+    assert importlib.import_module("nettune.config").config.feedback_db == "state/feedback.sqlite3"
 
 
 def test_recorder_follows_config(app, tmp_path):
-    import nettune_feedback
-
+    from nettune.ops import nettune_feedback
     app.config.dataset_capture = False
     assert nettune_feedback.recorder().enabled is False
     app.config.dataset_capture = True
@@ -43,15 +42,14 @@ def test_recorder_follows_config(app, tmp_path):
 
 
 def test_ids():
-    import nettune_feedback
-
+    from nettune.ops import nettune_feedback
     assert nettune_feedback.page_id("SKM_1.pdf", 3) == "SKM_1.pdf#3"
     assert nettune_feedback.ref_page_id("2026", "SEPTIEMBRE", "16-09-2026 p1") == \
         "ref:2026/SEPTIEMBRE/16-09-2026 p1"
 
 
 def test_failed_open_is_retried_after_the_backoff(app, tmp_path, monkeypatch):
-    import nettune_feedback
+    from nettune.ops import nettune_feedback
     from ocr_feedback.recorder import make_recorder as real_make
 
     app.config.dataset_capture = True
@@ -81,8 +79,7 @@ def test_failed_open_is_retried_after_the_backoff(app, tmp_path, monkeypatch):
 
 
 def test_kill_switch_off_is_never_retried(app, monkeypatch):
-    import nettune_feedback
-
+    from nettune.ops import nettune_feedback
     app.config.dataset_capture = False
     now = [0.0]
     monkeypatch.setattr(nettune_feedback, "_clock", lambda: now[0])
@@ -101,7 +98,7 @@ def test_concurrent_callers_share_one_rebuild(app, tmp_path, monkeypatch):
     import threading
     import time
 
-    import nettune_feedback
+    from nettune.ops import nettune_feedback
     from ocr_feedback.recorder import make_recorder as real_make
 
     app.config.dataset_capture = True

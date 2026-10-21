@@ -5,9 +5,9 @@ import os
 
 import pytest
 
-from entry_store import EntryStore
-from memoria import SEGURIDAD_BLOCK
-from routine_rules import is_routine_text, is_shift_routine
+from nettune.report.entry_store import EntryStore
+from nettune.report.memoria import SEGURIDAD_BLOCK
+from nettune.report.routine_rules import is_routine_text, is_shift_routine
 
 
 @pytest.mark.parametrize("text", [

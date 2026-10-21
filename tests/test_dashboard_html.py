@@ -5,7 +5,7 @@ from typing import ClassVar
 
 import pytest
 
-from dashboard_html import _SCRIPT, STYLESHEET, editor, page, summary
+from nettune.review.dashboard_html import _SCRIPT, STYLESHEET, editor, page, summary
 
 
 def an_entry(**over):
@@ -536,7 +536,7 @@ class TestNoReloads:
         once served a NUL byte, and "\\/" warns today and fails later."""
         import pathlib
         import warnings
-        source = pathlib.Path(__file__).parent.parent.joinpath("dashboard_html.py").read_text()
+        source = pathlib.Path(__file__).parent.parent.joinpath("nettune", "review", "dashboard_html.py").read_text()
         with warnings.catch_warnings():
             warnings.simplefilter("error")
             compile(source, "dashboard_html.py", "exec")
@@ -548,7 +548,7 @@ class TestNoFlashAndNoReloadBetweenSheets:
         full load flashed the light theme and the default panel width."""
         html_out = page("t", "")
         head = html_out[:html_out.index("</head>")]
-        from dashboard_html import _PRIMER_PINTADO
+        from nettune.review.dashboard_html import _PRIMER_PINTADO
         assert f"<script>{_PRIMER_PINTADO}</script>" in head
         for key in ("memoria-tema", "memoria-lateral", "memoria-imagen-ancho-2"):
             assert key in _PRIMER_PINTADO
