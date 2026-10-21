@@ -1,0 +1,12 @@
+[Unit]
+Description=Copy the NetTune review databases every night
+
+[Timer]
+# After midnight, when nobody is reviewing. Persistent: a night the Pi was
+# off is made up at the next boot.
+OnCalendar=*-*-* 02:30:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

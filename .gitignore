@@ -1,0 +1,74 @@
+# Environment variables (API keys, secrets)
+.env
+
+# Virtual environments
+venv/
+venv38/
+.venv/
+
+# Node dependencies (for promptfoo)
+node_modules/
+
+# Runtime logs
+logs/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Linter cache
+.ruff_cache/
+
+# Dedupe ledger (SHA-256 of processed scans)
+state/
+
+# Test cache
+.pytest_cache/
+
+# Opencode session data
+.opencode/
+
+# Runtime data
+incoming_scans/
+processed_reports/
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# promptfoo local output
+.promptfoo/
+promptfoo-errors.log
+
+# Real scans and the real memoria: company documents with personal and
+# commercial data. Needed to run, never committed. See promptfoo/README.md
+# and deploy/README.md for how to supply them.
+promptfoo/fixtures/*.jpg
+promptfoo/fixtures/*.jpeg
+promptfoo/fixtures/*.png
+promptfoo/fixtures/*.pdf
+templates/*.docx
+
+# Probe output: real transcriptions of company scans.
+tools/probe_out/
+
+# Editor backups of the environment file: these hold live API keys.
+.env.*
+!.env.example
+
+# Brainstorming mockups
+.superpowers/
+
+# ocr_feedback dataset snapshots: real transcriptions with names.
+datasets/

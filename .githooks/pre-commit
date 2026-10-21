@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Refuses a commit that would publish a credential or a company document.
+#
+# Three separate leaks reached this repository before this hook existed: the
+# OpenAI key in .env, the Google key in an editor's .env.save backup, and the
+# real scans and memoria template. .gitignore stopped none of them, because
+# each new leak arrived under a name the ignore list did not yet know.
+#
+# Installed by: git config core.hooksPath .githooks
+
+set -uo pipefail
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -z "$staged" ] && exit 0
+
+fail=0
+
+# Files that must never be committed whatever they contain, matched by shape
+# rather than by exact name so a backup or a copy is caught too.
+while IFS= read -r path; do
+    case "$path" in
+        .env.example) ;;
+        .env|.env.*|*/.env|*/.env.*)
+            echo "BLOCKED: $path is an environment file and may hold a key." ;  fail=1 ;;
+        *.docx|*.doc|*.pdf|*.jpg|*.jpeg|*.png|*.tif|*.tiff)
+            echo "BLOCKED: $path looks like a scan or a company document." ;    fail=1 ;;
+        *.log)
+            echo "BLOCKED: $path is a log and may hold transcribed entries." ;  fail=1 ;;
+    esac
+done <<< "$staged"
+
+# Credentials pasted into an ordinary source file.
+pattern='sk-[A-Za-z0-9_-]{20,}|AIza[A-Za-z0-9_-]{30,}|ghp_[A-Za-z0-9]{30,}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+if git diff --cached -U0 | grep -aEn "^\+.*($pattern)" >/dev/null; then
+    echo "BLOCKED: a staged line looks like a live credential."
+    git diff --cached --name-only | while IFS= read -r f; do
+        if git show ":$f" 2>/dev/null | grep -aqE "$pattern"; then echo "         in $f"; fi
+    done
+    fail=1
+fi
+
+if [ "$fail" -ne 0 ]; then
+    echo
+    echo "Nothing was committed. Unstage the file, or --no-verify if you are certain."
+    exit 1
+fi
+exit 0

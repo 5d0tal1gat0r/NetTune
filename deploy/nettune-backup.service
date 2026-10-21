@@ -1,0 +1,21 @@
+[Unit]
+Description=NetTune nightly copy of the review databases
+Documentation=file:///opt/security_log_processor/deploy/README.md
+
+[Service]
+Type=oneshot
+User=scanproc
+Group=scanproc
+WorkingDirectory=/opt/security_log_processor
+EnvironmentFile=/opt/security_log_processor/.env
+ExecStart=/opt/security_log_processor/venv/bin/python tools/backup_state.py
+
+StandardOutput=journal
+StandardError=journal
+
+# Hardening: it reads the databases and writes only the backup folder.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/var/backups/nettune

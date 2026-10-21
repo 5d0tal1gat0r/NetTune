@@ -1,0 +1,9 @@
+[Unit]
+Description=Copy NetTune backups and review images from the Pi (read-only)
+After=network-online.target tailscaled.service
+Wants=network-online.target
+RequiresMountsFor=%h/NetTuneData
+
+[Service]
+Type=oneshot
+ExecStart=%h/NetTune/security_log_processor/deploy/workbench/pull_all.sh

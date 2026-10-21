@@ -1,0 +1,19 @@
+[tool.ruff]
+line-length = 100
+exclude = ["venv", "node_modules", ".ruff_cache"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "G", "DTZ", "RUF"]
+ignore = [
+    # The app deliberately logs through the root logger, configured once in
+    # main.py, so a systemd unit gets everything on one stream.
+    "LOG015",
+    # Report filenames use local wall-clock time on purpose.
+    "DTZ005",
+    # f-strings in log calls are this project's established convention
+    # (see AGENTS.md); these logs are always emitted, so laziness buys nothing.
+    "G004",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]

@@ -1,0 +1,266 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+#
+# Regression suite for the FILTER prompt (prompts/report_filter.md), stage 2.
+#
+#   npm run eval:filter
+#
+# Stage 2 is cosmetic: it tidies wording and removes people's names. The
+# assertions below encode what it must NEVER do -- drop an entry, invent one,
+# reorder, resolve a [?] marker, or strip a company name or the date.
+
+description: "NetTune ficha - stage 2 cleanup and redaction (both types)"
+
+prompts:
+  - file://filter_prompt.js
+
+providers:
+  - id: openai:chat:gpt-5.4-mini
+    config:
+      max_completion_tokens: 2000
+
+defaultTest:
+  assert:
+    - type: is-json
+    - type: javascript
+      value: Array.isArray(JSON.parse(output).trabajos)
+
+tests:
+  - description: "expands abbreviations without losing entries"
+    vars:
+      titulo: "FICHA DIARIA DE TRABAJO DE MANTENIMIENTO"
+      fecha: "02-07-2026"
+      operarios: "A. Ejemplo"
+      trabajos: |
+        Revisando cuadro electrico,
+        Conectando mg de aire.
+        Con la obra de cargadores en PK 2-6 ext. (1H)
+    assert:
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 3
+      - type: icontains
+        value: "manguera"
+      - type: icontains
+        value: "parking"
+      - type: icontains
+        value: "cargadores"
+
+  - description: "redacts a person but keeps the company and the zone"
+    vars:
+      titulo: "FICHA DIARIA DE TRABAJO"
+      fecha: "04-07-2026"
+      operarios: "B. Ejemplo"
+      trabajos: |
+        Relevo de turno con el vigilante C. Ejemplo
+        Con Endesa para la instalacion del transformador en 2-6
+    assert:
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 2
+      - type: not-icontains
+        value: "Ejemplo"
+      - type: icontains
+        value: "Endesa"
+      - type: icontains
+        value: "2-6"
+
+  - description: "leaves an uncertain [?] marker unresolved"
+    vars:
+      titulo: "FICHA DIARIA DE TRABAJO"
+      fecha: "22-06-2026"
+      operarios: "A. Ejemplo"
+      trabajos: |
+        Limpiando foso [?] con agua
+    assert:
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 1
+      - type: icontains
+        value: "[?]"
+
+  - description: "never drops a short or odd entry"
+    vars:
+      titulo: "FICHA DIARIA DE TRABAJO"
+      fecha: "30-06-2026"
+      operarios: "A. Ejemplo"
+      trabajos: |
+        PK
+        Apertura del muelle
+        ???
+        Cierre de la planta
+    assert:
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 4
+      - type: icontains
+        value: "muelle"
+
+  - description: "mantenimiento - daily checks are routine, the repair is not"
+    vars:
+      tipo: mantenimiento
+      titulo: "FICHA DIARIA DE TRABAJO DE MANTENIMIENTO"
+      fecha: "02-07-2026"
+      operarios: "A. Ejemplo"
+      trabajos: |
+        Revisando cuadros electricos
+        Conectando mg de aire
+        Reparando puerta de emergencia 7-4 P-1, manivela rota (3H)
+        Comprobando agua de riego
+    assert:
+      - type: javascript
+        value: JSON.parse(output).rutinarias.length === 4
+      - type: javascript
+        value: JSON.parse(output).rutinarias[0] === true
+      - type: javascript
+        value: JSON.parse(output).rutinarias[1] === true
+      - type: javascript
+        value: JSON.parse(output).rutinarias[2] === false
+      - type: javascript
+        value: JSON.parse(output).rutinarias[3] === true
+
+  - description: "mantenimiento - works with a third party or a duration are notable"
+    vars:
+      tipo: mantenimiento
+      titulo: "FICHA DIARIA DE TRABAJO DE MANTENIMIENTO"
+      fecha: "01-07-2026"
+      operarios: "A. Ejemplo"
+      trabajos: |
+        Revisando cuadros electricos
+        Con Endesa para la instalacion del transformador para los cargadores
+        Con la obra de cargadores en parking 2-6 exterior (1H)
+        Pintando fachada 7-9 exterior
+    assert:
+      - type: javascript
+        value: JSON.parse(output).rutinarias[0] === true
+      - type: javascript
+        value: JSON.parse(output).rutinarias.slice(1).every((r) => r === false)
+
+  - description: "mantenimiento - a check that found something is not routine"
+    vars:
+      tipo: mantenimiento
+      titulo: "FICHA DIARIA DE TRABAJO DE MANTENIMIENTO"
+      fecha: "03-07-2026"
+      operarios: "A. Ejemplo"
+      trabajos: |
+        Revisando cuadros electricos
+        Revisando cuadros electricos, se detecta magnetotermico saltado
+        Camara CCTV-07 sin senal, se registra averia
+    assert:
+      - type: javascript
+        value: JSON.parse(output).rutinarias[0] === true
+      - type: javascript
+        value: JSON.parse(output).rutinarias[1] === false
+      - type: javascript
+        value: JSON.parse(output).rutinarias[2] === false
+
+  # ------------------------------------------------- seguridad
+  # Wording taken from the real March service reports.
+  - description: "seguridad - marks a wholly routine shift as routine"
+    vars:
+      tipo: seguridad
+      titulo: "PARTE DIARIO DE SERVICIO"
+      fecha: "06-03-2026"
+      operarios: "vigilante"
+      trabajos: |
+        Inicio del servicio
+        Se quitan pilonas Z1, Z2 y Z3
+        Se revisan torreones y se abren (Z9, Z12, Z27)
+        Se abre Z6-1
+        Finaliza el servicio
+    assert:
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 5
+      - type: javascript
+        value: JSON.parse(output).rutinarias.length === 5
+      # Every line here is ordinary shift operation.
+      - type: javascript
+        value: JSON.parse(output).rutinarias.every(Boolean)
+      - type: icontains
+        value: "Z6-1"
+      - type: icontains
+        value: "pilonas"
+      - type: not-icontains
+        value: "pilones"
+
+  - description: "seguridad - separates the incident from the routine around it"
+    vars:
+      tipo: seguridad
+      titulo: "PARTE DIARIO DE SERVICIO"
+      fecha: "06-03-2026"
+      operarios: "vigilante"
+      trabajos: |
+        Inicio del servicio
+        Se colocan pilonas Z10 y se cierra porton Z4
+        Se recibe queja de posible pinchazo en las impulsoras, se indica olor
+        Se observa que faltan dos mesas en terraza
+        Conexion del alumbrado de noche
+        Finaliza el servicio
+    assert:
+      - type: javascript
+        value: JSON.parse(output).rutinarias.length === 6
+      # The queja and the missing tables are the only notable events.
+      - type: javascript
+        value: JSON.parse(output).rutinarias[2] === false
+      - type: javascript
+        value: JSON.parse(output).rutinarias[3] === false
+      - type: javascript
+        value: JSON.parse(output).rutinarias[0] === true
+      - type: javascript
+        value: JSON.parse(output).rutinarias[5] === true
+
+  - description: "seguridad - a round that found something is not routine"
+    vars:
+      tipo: seguridad
+      titulo: "PARTE DIARIO DE SERVICIO"
+      fecha: "06-03-2026"
+      operarios: "vigilante"
+      trabajos: |
+        Se efectuan rondas por todo el centro sin novedad
+        En ronda se detecta una puerta forzada en Z12
+    assert:
+      - type: javascript
+        value: JSON.parse(output).rutinarias[0] === true
+      - type: javascript
+        value: JSON.parse(output).rutinarias[1] === false
+
+  - description: "seguridad - anonymises people without losing the event"
+    vars:
+      tipo: seguridad
+      titulo: "PARTE DIARIO DE SERVICIO"
+      fecha: "06-03-2026"
+      operarios: "vigilante"
+      trabajos: |
+        Se llama la atencion a una chica que deja una moto en lugar no autorizado
+        Relevo de turno con el vigilante C. Ejemplo
+        Salida de empleados por la puerta principal
+    assert:
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 3
+      - type: not-icontains
+        value: "Ejemplo"
+      - type: icontains
+        value: "moto"
+      - type: llm-rubric
+        value: >
+          Las anotaciones no describen a las personas por sexo, edad ni rasgos
+          fisicos. Se refieren a ellas de forma neutra (una persona, el
+          vigilante, empleados). El hecho descrito se conserva.
+
+  - description: "seguridad - supplier names survive the redaction"
+    vars:
+      tipo: seguridad
+      titulo: "INFORME DIARIO"
+      fecha: "16-09-2026"
+      operarios: "vigilante"
+      trabajos: |
+        Se avisa a Schindler por fallo en la escalera mecanica
+        Se persona ATIS para revisar la camara de video
+        Con Endesa para la instalacion del transformador
+        Se contacta con Telefonica por la linea de datos
+    assert:
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 4
+      - type: icontains
+        value: "Schindler"
+      - type: icontains
+        value: "ATIS"
+      - type: icontains
+        value: "Endesa"
+      - type: icontains
+        value: "Telefonica"

@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly copy from the Pi, about an hour after its 02:30 backup (local time)
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

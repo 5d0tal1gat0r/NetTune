@@ -1,0 +1,97 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+#
+# Regression suite for the OCR prompt (prompts/transcription.md).
+#
+#   npx promptfoo eval      run it
+#   npx promptfoo view      browse the results
+#
+# Every assertion below is ground truth READ OFF THE PAGE BY EYE, not model
+# output. Zoom into promptfoo/fixtures/*.jpg to check any of them yourself.
+# Edit prompts/transcription.md, re-run, and see what you gained or broke.
+
+description: "NetTune ficha OCR - accuracy regression suite"
+
+prompts:
+  - file://promptfoo/ocr_prompt.js
+
+providers:
+  - id: openai:chat:gpt-5.4-mini   # production default: accurate and cheap
+    config:
+      max_completion_tokens: 4000
+
+defaultTest:
+  vars:
+    # The live prompt file: editing prompts/transcription.md changes this eval.
+    prompt_file: transcription.md
+  assert:
+    # The whole pipeline depends on this being parseable JSON.
+    - type: is-json
+    # A refusal is the failure that silently became a report before.
+    - type: not-icontains
+      value: "I'm sorry"
+    - type: not-icontains
+      value: "can't assist"
+    # trabajos comes only from the chronology box. Nothing from the header or
+    # the signature block may appear as an entry.
+    - type: javascript
+      value: |
+        const t = (JSON.parse(output).trabajos || []).join(' ').toLowerCase();
+        return !['firma de los vigilantes', 'nombre y apellidos', 'tip',
+                 'vigilantes de servicio', 'orden cronologico', 'direccion:']
+                 .some((x) => t.includes(x));
+
+tests:
+  # ---------------------------------------------------------------- julio 02
+  # Ground truth: FECHA 2-7-2026, A. Ejemplo, 4 anotaciones.
+  # The third reads "Con la obra de cargadores en Parking 2-6 exterior (1H)";
+  # gpt-4o used to read "cargadores" as "Carrefour".
+  - description: "julio 02 - fecha, operario y las cuatro anotaciones"
+    vars:
+      page: julio_02
+    assert:
+      - type: javascript
+        value: JSON.parse(output).fecha === '02-07-2026'
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 4
+      - type: javascript
+        value: JSON.parse(output).operarios.join(' ').includes('Moral')  # tolerate a [?] marker
+      - type: icontains
+        value: "cuadros"
+      - type: icontains
+        value: "cargadores"
+      - type: not-icontains
+        value: "Carrefour"
+
+  # ---------------------------------------------------------------- julio 04
+  # Ground truth: FECHA 4-7-2026, B. Ejemplo, ONE anotacion:
+  # "Conectando mg. de aire". Every model tested reads "cobre" here; the
+  # assertion is deliberately left failing so the day a prompt fixes it, the
+  # suite says so. Zoom the fixture: there is a dot over the i and no b riser.
+  - description: "julio 04 - la pagina de una sola anotacion (aire, no cobre)"
+    vars:
+      page: julio_04
+    assert:
+      - type: javascript
+        value: JSON.parse(output).fecha === '04-07-2026'
+      - type: javascript
+        value: JSON.parse(output).trabajos.length === 1
+      - type: icontains
+        value: "aire"
+
+  # ---------------------------------------------------------------- junio 22
+  # Ground truth: FECHA 22-6-2026, A. Ejemplo, 5 anotaciones including
+  # the grupo electrogeno test and the foso.
+  - description: "junio 22 - cinco anotaciones y fecha de junio"
+    vars:
+      page: junio_22
+    assert:
+      - type: javascript
+        value: JSON.parse(output).fecha === '22-06-2026'
+      - type: javascript
+        value: JSON.parse(output).trabajos.length >= 4
+      - type: icontains
+        value: "electr"
+      - type: llm-rubric
+        value: >
+          El JSON contiene anotaciones de trabajo de mantenimiento en espanol.
+          Ninguna anotacion esta en ingles ni es un mensaje de disculpa.

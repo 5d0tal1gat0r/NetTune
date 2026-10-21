@@ -1,0 +1,15 @@
+{
+  "name": "nettune-scan-prompts",
+  "private": true,
+  "description": "Prompt regression suite for the security log processor OCR",
+  "scripts": {
+    "eval": "promptfoo eval",
+    "eval:fresh": "promptfoo eval --no-cache",
+    "view": "promptfoo view",
+    "eval:filter": "promptfoo eval -c promptfoo/filter.yaml",
+    "eval:all": "npm run eval && npm run eval:filter"
+  },
+  "devDependencies": {
+    "promptfoo": "^0.123.0"
+  }
+}

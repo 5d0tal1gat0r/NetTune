@@ -1,0 +1,35 @@
+[Unit]
+Description=Security Log Processor (scan -> transcription -> DOCX report)
+Documentation=file:///opt/security_log_processor/deploy/README.md
+After=network-online.target smbd.service
+Wants=network-online.target
+# Harmless when the tree is on local disk; essential when it is a CIFS mount,
+# or the watcher would start on an empty directory and never see the mount.
+RequiresMountsFor=/srv/security_scans
+# Never stop retrying: the OpenAI API or the network may be down for a long
+# stretch, and nobody is watching this Pi. Must live in [Unit], not [Service].
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=scanproc
+Group=scanproc
+WorkingDirectory=/opt/security_log_processor
+EnvironmentFile=/opt/security_log_processor/.env
+ExecStart=/opt/security_log_processor/venv/bin/python -u main.py
+
+StandardOutput=journal
+StandardError=journal
+
+Restart=always
+RestartSec=10s
+
+# Hardening: the service only needs its own directory and the scan tree.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/opt/security_log_processor /srv/security_scans
+
+[Install]
+WantedBy=multi-user.target

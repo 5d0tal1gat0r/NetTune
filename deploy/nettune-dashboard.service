@@ -1,0 +1,35 @@
+[Unit]
+Description=NetTune review dashboard (read the memoria, check it against the sheets)
+Documentation=file:///opt/security_log_processor/deploy/README.md
+After=network-online.target security-log-processor.service
+Wants=network-online.target
+RequiresMountsFor=/srv/security_scans
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=scanproc
+Group=scanproc
+WorkingDirectory=/opt/security_log_processor
+EnvironmentFile=/opt/security_log_processor/.env
+ExecStart=/opt/security_log_processor/venv/bin/python -u dashboard.py --port 8080
+
+StandardOutput=journal
+StandardError=journal
+
+Restart=always
+RestartSec=10s
+
+# It serves a page on the centre's LAN; it has no business anywhere else on
+# the filesystem.
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+# logs/ is here because dashboard.py imports main, and main configures a
+# rotating file handler at import time. Without it ProtectSystem=strict makes
+# that open() fail and the service crash-loops before it ever binds a port.
+ReadWritePaths=/srv/security_scans /opt/security_log_processor/state /opt/security_log_processor/logs
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

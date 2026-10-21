@@ -1,0 +1,31 @@
+# ONLY needed for the alternative topology where the scan folder lives on the
+# colleague's Windows PC and the Pi mounts it. The recommended setup is the
+# reverse (the Pi hosts the share via samba-incoming-scans.conf), which needs
+# no configuration on the colleague's machine at all.
+#
+# Install as /etc/systemd/system/srv-security_scans-incoming_scans.mount
+# (the filename MUST match the mount path, with "-" for "/").
+#   sudo systemctl enable --now srv-security_scans-incoming_scans.mount
+#
+# Credentials file /etc/samba/scan-credentials (chmod 600):
+#   username=ScanUser
+#   password=...
+#   domain=WORKGROUP
+#
+# With this topology set WATCH_MODE=polling in .env: inotify is blind to
+# writes made by the SMB server on the other end.
+
+[Unit]
+Description=Colleague scan folder (CIFS over Tailscale)
+After=tailscaled.service network-online.target
+Wants=network-online.target
+
+[Mount]
+What=//100.64.0.10/Scans
+Where=/srv/security_scans/incoming_scans
+Type=cifs
+Options=credentials=/etc/samba/scan-credentials,uid=scanproc,gid=scanproc,file_mode=0664,dir_mode=0775,vers=3.0,_netdev,nofail,soft
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target

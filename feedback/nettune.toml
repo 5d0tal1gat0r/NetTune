@@ -1,0 +1,32 @@
+# NetTune security/maintenance log processor. See
+# the OCR feedback design (kept private)
+system = "nettune"
+
+[[stages]]
+name = "passes"      # each GPT vision reading, before consensus
+kind = "reads"
+[[stages]]
+name = "consensus"   # consolidate + collapse
+kind = "select"
+[[stages]]
+name = "filtered"    # filter_page: tidy wording, redact names
+kind = "select"
+[[stages]]
+name = "omitted"     # lines hidden as routine
+kind = "drop"
+
+[truth]
+section_field = "section"   # seguridad | mantenimiento
+tag_name = "block"
+
+[align]
+same_line = 0.72            # consensus._SAME_LINE
+fold_accents = true
+strip_punctuation = true
+
+[replay]
+paid = true
+max_eur = 3.0
+noise_runs = 2
+set_size = 25
+worst_share = 0.4
